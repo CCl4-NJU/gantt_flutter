@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
-import 'product_gantt_page.dart';
 import 'dart:math';
 
 import 'models.dart';
 
-class GranttChartScreen extends StatefulWidget {
+class ProductGanttPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new GranttChartScreenState();
+    return new ProductGranttScreenState();
   }
 }
 
-class GranttChartScreenState extends State<GranttChartScreen>
+class ProductGranttScreenState extends State<ProductGanttPage>
     with TickerProviderStateMixin {
   AnimationController animationController;
 
@@ -36,7 +35,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
 
   Widget buildAppBar() {
     return AppBar(
-      title: Text('GANTT CHART'),
+      title: Text('PRODUCT GANTT'),
     );
   }
 
@@ -52,7 +51,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              child: GanttChart(
+              child: ProductGantt(
                 animationController: animationController,
                 fromDate: fromDate,
                 toDate: toDate,
@@ -67,7 +66,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
   }
 }
 
-class GanttChart extends StatelessWidget {
+class ProductGantt extends StatelessWidget {
   final AnimationController animationController;
   final DateTime fromDate;
   final DateTime toDate;
@@ -78,7 +77,7 @@ class GanttChart extends StatelessWidget {
   int viewRangeToFitScreen = 6;
   Animation<double> width;
 
-  GanttChart({
+  ProductGantt({
     this.animationController,
     this.fromDate,
     this.toDate,
@@ -243,70 +242,62 @@ class GanttChart extends StatelessWidget {
     );
   }
 
-  Widget buildChartForEachUser(List<Resource> userData, double chartViewWidth,
-      Product user, BuildContext context) {
+  Widget buildChartForEachUser(
+      List<Resource> userData, double chartViewWidth, Product user) {
     Color color = randomColorGenerator();
     var chartBars = buildChartBars(userData, chartViewWidth, color);
-    return new GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProductGanttPage()),
-          );
-        },
-        child: new Container(
-          height: chartBars.length * 29.0 + 25.0 + 4.0,
-          child: ListView(
-            physics: new ClampingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              Stack(fit: StackFit.loose, children: <Widget>[
-                buildGrid(chartViewWidth),
-                buildHeader(chartViewWidth, color),
-                Container(
-                    margin: EdgeInsets.only(top: 25.0),
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                    width:
-                                        chartViewWidth / viewRangeToFitScreen,
-                                    height: chartBars.length * 29.0 + 4.0,
-                                    color: color.withAlpha(100),
-                                    child: Center(
-                                      child: new RotatedBox(
-                                        quarterTurns:
-                                            chartBars.length * 29.0 + 4.0 > 50
-                                                ? 0
-                                                : 0,
-                                        child: new Text(
-                                          user.name,
-                                          textAlign: TextAlign.center,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    )),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: chartBars,
-                                ),
-                              ],
+    return Container(
+      height: chartBars.length * 29.0 + 25.0 + 4.0,
+      child: ListView(
+        physics: new ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          Stack(fit: StackFit.loose, children: <Widget>[
+            buildGrid(chartViewWidth),
+            buildHeader(chartViewWidth, color),
+            Container(
+                margin: EdgeInsets.only(top: 25.0),
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                width: chartViewWidth / viewRangeToFitScreen,
+                                height: chartBars.length * 29.0 + 4.0,
+                                color: color.withAlpha(100),
+                                child: Center(
+                                  child: new RotatedBox(
+                                    quarterTurns:
+                                        chartBars.length * 29.0 + 4.0 > 50
+                                            ? 0
+                                            : 0,
+                                    child: new Text(
+                                      user.name,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                )),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: chartBars,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    )),
-              ]),
-            ],
-          ),
-        ));
+                    ],
+                  ),
+                )),
+          ]),
+        ],
+      ),
+    );
   }
 
-  List<Widget> buildChartContent(double chartViewWidth, BuildContext context) {
+  List<Widget> buildChartContent(double chartViewWidth) {
     List<Widget> chartContent = new List();
 
     usersInChart.forEach((user) {
@@ -317,8 +308,8 @@ class GanttChart extends StatelessWidget {
           .toList();
 
       if (projectsOfUser.length > 0) {
-        chartContent.add(buildChartForEachUser(
-            projectsOfUser, chartViewWidth, user, context));
+        chartContent
+            .add(buildChartForEachUser(projectsOfUser, chartViewWidth, user));
       }
     });
 
@@ -336,7 +327,7 @@ class GanttChart extends StatelessWidget {
 
     return Container(
       child: MediaQuery.removePadding(
-        child: ListView(children: buildChartContent(chartViewWidth, context)),
+        child: ListView(children: buildChartContent(chartViewWidth)),
         removeTop: true,
         context: context,
       ),
@@ -345,86 +336,84 @@ class GanttChart extends StatelessWidget {
 }
 
 var users = [
-  Product(id: 1, name: '产品1'),
-  Product(id: 2, name: '产品2'),
+  // Product(id: 1, name: '产品1'),
+  // Product(id: 2, name: '产品2'),
   Product(id: 3, name: '产品3'),
-  Product(id: 4, name: '产品4'),
-  Product(id: 5, name: '产品5'),
+  // Product(id: 4, name: '产品4'),
+  // Product(id: 5, name: '产品5'),
 ];
 
-//productions：一条生产线同一时段可以同时生产多个产品，只是示例刚好没有这种情况
-//两个问题：1. 不能跨天显示 2. 时间必须为整点，否则会向下取整
 var projects = [
+  // Resource(
+  //     id: 1,
+  //     name: 'Line 1',
+  //     startTime: DateTime(2018, 1, 1, 7, 0),
+  //     endTime: DateTime(2018, 1, 1, 9, 0),
+  //     productions: [1]),
+  // Resource(
+  //     id: 2,
+  //     name: 'Line 1',
+  //     startTime: DateTime(2018, 1, 1, 9, 0),
+  //     endTime: DateTime(2018, 1, 1, 17, 0),
+  //     productions: [2]),
   Resource(
       id: 1,
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 7, 0),
-      endTime: DateTime(2018, 1, 1, 9, 0),
-      productions: [1]),
-  Resource(
-      id: 2,
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 17, 0),
-      productions: [2]),
-  Resource(
-      id: 3,
       name: 'Line 1',
       startTime: DateTime(2018, 1, 1, 18, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
       productions: [3]),
+  // Resource(
+  //     id: 4,
+  //     name: 'Line 1',
+  //     startTime: DateTime(2018, 1, 1, 21, 0),
+  //     endTime: DateTime(2018, 1, 1, 23, 0),
+  //     productions: [4]),
   Resource(
-      id: 4,
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: [4]),
-  Resource(
-      id: 5,
+      id: 2,
       name: 'Line 4',
       startTime: DateTime(2018, 1, 1, 9, 0),
       endTime: DateTime(2018, 1, 1, 11, 0),
       productions: [3]),
+  // Resource(
+  //     id: 6,
+  //     name: '李四',
+  //     startTime: DateTime(2018, 1, 1, 7, 0),
+  //     endTime: DateTime(2018, 1, 1, 9, 0),
+  //     productions: [1]),
+  // Resource(
+  //     id: 7,
+  //     name: '李四',
+  //     startTime: DateTime(2018, 1, 1, 9, 0),
+  //     endTime: DateTime(2018, 1, 1, 17, 0),
+  //     productions: [2]),
+  // Resource(
+  //     id: 8,
+  //     name: '李四',
+  //     startTime: DateTime(2018, 1, 1, 21, 0),
+  //     endTime: DateTime(2018, 1, 1, 23, 0),
+  //     productions: [5]),
   Resource(
-      id: 6,
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 7, 0),
-      endTime: DateTime(2018, 1, 1, 9, 0),
-      productions: [1]),
-  Resource(
-      id: 7,
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 17, 0),
-      productions: [2]),
-  Resource(
-      id: 8,
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: [5]),
-  Resource(
-      id: 9,
+      id: 3,
       name: '小明',
       startTime: DateTime(2018, 1, 1, 9, 0),
       endTime: DateTime(2018, 1, 1, 11, 0),
       productions: [3]),
   Resource(
-      id: 10,
+      id: 4,
       name: '小明',
       startTime: DateTime(2018, 1, 1, 18, 0),
       endTime: DateTime(2018, 1, 1, 19, 0),
       productions: [3]),
   Resource(
-      id: 11,
+      id: 5,
       name: '张三',
       startTime: DateTime(2018, 1, 1, 19, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
       productions: [3]),
-  Resource(
-      id: 12,
-      name: '张三',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: [4]),
+  // Resource(
+  //     id: 12,
+  //     name: '张三',
+  //     startTime: DateTime(2018, 1, 1, 21, 0),
+  //     endTime: DateTime(2018, 1, 1, 23, 0),
+  //     productions: [4]),
 ];
