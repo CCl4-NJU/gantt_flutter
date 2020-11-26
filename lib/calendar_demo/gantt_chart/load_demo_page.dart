@@ -100,29 +100,29 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 }
 
-Widget getCircular(int load) {
-  var dataGauge = [
-    new GaugeSegment(1, load),
-    new GaugeSegment(0, 100 - load),
-  ];
-  var seriesGauge = [
-    charts.Series(
-      data: dataGauge,
-      domainFn: (GaugeSegment segment, _) => segment.load,
-      measureFn: (GaugeSegment segment, _) => segment.load_percent,
-      colorFn: (GaugeSegment segment, _) => segment.load == 0
-          ? charts.ColorUtil.fromDartColor(Colors.white)
-          : bar_colors[segment.load_percent ~/ 20],
-      id: 'Segments',
-    )
-  ];
-  return charts.PieChart(
-    seriesGauge,
-    animate: true,
-    defaultRenderer: new charts.ArcRendererConfig(
-        arcWidth: 30, startAngle: 4 / 5 * 3.14, arcLength: 7 / 5 * 3.14),
-  );
-}
+// Widget getCircular(int load) {
+//   var dataGauge = [
+//     new GaugeSegment(1, load),
+//     new GaugeSegment(0, 100 - load),
+//   ];
+//   var seriesGauge = [
+//     charts.Series(
+//       data: dataGauge,
+//       domainFn: (GaugeSegment segment, _) => segment.load,
+//       measureFn: (GaugeSegment segment, _) => segment.load_percent,
+//       colorFn: (GaugeSegment segment, _) => segment.load == 0
+//           ? charts.ColorUtil.fromDartColor(Colors.white)
+//           : bar_colors[segment.load_percent ~/ 20],
+//       id: 'Segments',
+//     )
+//   ];
+//   return charts.PieChart(
+//     seriesGauge,
+//     animate: true,
+//     defaultRenderer: new charts.ArcRendererConfig(
+//         arcWidth: 30, startAngle: 4 / 5 * 3.14, arcLength: 7 / 5 * 3.14),
+//   );
+// }
 
 Widget getBar(List<BarLoad> dataBar, String date) {
   var seriesBar = [
@@ -158,8 +158,8 @@ class BarLoad {
   BarLoad(this.resource, this.load_percent);
 }
 
-class GaugeSegment {
-  int load; //如果为0，表示空白；如果为1，表示数据
-  int load_percent;
-  GaugeSegment(this.load, this.load_percent);
-}
+// class GaugeSegment {
+//   int load; //如果为0，表示空白；如果为1，表示数据
+//   int load_percent;
+//   GaugeSegment(this.load, this.load_percent);
+// }
