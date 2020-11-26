@@ -15,6 +15,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
 
+  //设置时间
   DateTime fromDate = DateTime(2018, 1, 1);
   DateTime toDate = DateTime(2018, 1, 2);
 
@@ -245,55 +246,60 @@ class GanttChart extends StatelessWidget {
       List<Resource> userData, double chartViewWidth, Product user) {
     Color color = randomColorGenerator();
     var chartBars = buildChartBars(userData, chartViewWidth, color);
-    return Container(
-      height: chartBars.length * 29.0 + 25.0 + 4.0,
-      child: ListView(
-        physics: new ClampingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          Stack(fit: StackFit.loose, children: <Widget>[
-            buildGrid(chartViewWidth),
-            buildHeader(chartViewWidth, color),
-            Container(
-                margin: EdgeInsets.only(top: 25.0),
-                child: Container(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                width: chartViewWidth / viewRangeToFitScreen,
-                                height: chartBars.length * 29.0 + 4.0,
-                                color: color.withAlpha(100),
-                                child: Center(
-                                  child: new RotatedBox(
-                                    quarterTurns:
-                                        chartBars.length * 29.0 + 4.0 > 50
-                                            ? 0
-                                            : 0,
-                                    child: new Text(
-                                      user.name,
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: chartBars,
+    return new GestureDetector(
+        onTap: () {
+          print('clicked product:' + user.id.toString() + ',' + user.name);
+        },
+        child: new Container(
+          height: chartBars.length * 29.0 + 25.0 + 4.0,
+          child: ListView(
+            physics: new ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              Stack(fit: StackFit.loose, children: <Widget>[
+                buildGrid(chartViewWidth),
+                buildHeader(chartViewWidth, color),
+                Container(
+                    margin: EdgeInsets.only(top: 25.0),
+                    child: Container(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                    width:
+                                        chartViewWidth / viewRangeToFitScreen,
+                                    height: chartBars.length * 29.0 + 4.0,
+                                    color: color.withAlpha(100),
+                                    child: Center(
+                                      child: new RotatedBox(
+                                        quarterTurns:
+                                            chartBars.length * 29.0 + 4.0 > 50
+                                                ? 0
+                                                : 0,
+                                        child: new Text(
+                                          user.name,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    )),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: chartBars,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                )),
-          ]),
-        ],
-      ),
-    );
+                    )),
+              ]),
+            ],
+          ),
+        ));
   }
 
   List<Widget> buildChartContent(double chartViewWidth) {
