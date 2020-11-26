@@ -36,7 +36,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
 
   Widget buildAppBar() {
     return AppBar(
-      title: Text('GANTT CHART'),
+      title: Text('Resource Gantt'),
     );
   }
 
@@ -69,10 +69,10 @@ class GranttChartScreenState extends State<GranttChartScreen>
 
 class GanttChart extends StatelessWidget {
   final AnimationController animationController;
-  final DateTime fromDate;
-  final DateTime toDate;
-  final List<Resource> data;
-  final List<Product> usersInChart;
+  DateTime fromDate;
+  DateTime toDate;
+  List<Resource> data;
+  List<Product> usersInChart;
 
   int viewRange;
   int viewRangeToFitScreen = 6;

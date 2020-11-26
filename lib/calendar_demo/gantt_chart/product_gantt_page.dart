@@ -35,7 +35,7 @@ class ProductGranttScreenState extends State<ProductGanttPage>
 
   Widget buildAppBar() {
     return AppBar(
-      title: Text('PRODUCT GANTT'),
+      title: Text('Product Gantt'),
     );
   }
 
@@ -68,10 +68,10 @@ class ProductGranttScreenState extends State<ProductGanttPage>
 
 class ProductGantt extends StatelessWidget {
   final AnimationController animationController;
-  final DateTime fromDate;
-  final DateTime toDate;
-  final List<Resource> data;
-  final List<Product> usersInChart;
+  DateTime fromDate;
+  DateTime toDate;
+  List<Resource> data;
+  List<Product> usersInChart;
 
   int viewRange;
   int viewRangeToFitScreen = 6;

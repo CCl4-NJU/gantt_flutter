@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+import 'models.dart';
+
 var bar_colors = [
   charts.ColorUtil.fromDartColor(Colors.lightBlue),
   charts.ColorUtil.fromDartColor(Colors.blueGrey),
@@ -16,7 +18,7 @@ class LoadDemoPage extends StatefulWidget {
 }
 
 class LoadDemoPageState extends State<LoadDemoPage> {
-  final _data_rows = <RowData>[];
+  var _data_rows = <RowData>[];
   int _device_load = 0;
   int _human_load = 0;
 
@@ -100,30 +102,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 }
 
-// Widget getCircular(int load) {
-//   var dataGauge = [
-//     new GaugeSegment(1, load),
-//     new GaugeSegment(0, 100 - load),
-//   ];
-//   var seriesGauge = [
-//     charts.Series(
-//       data: dataGauge,
-//       domainFn: (GaugeSegment segment, _) => segment.load,
-//       measureFn: (GaugeSegment segment, _) => segment.load_percent,
-//       colorFn: (GaugeSegment segment, _) => segment.load == 0
-//           ? charts.ColorUtil.fromDartColor(Colors.white)
-//           : bar_colors[segment.load_percent ~/ 20],
-//       id: 'Segments',
-//     )
-//   ];
-//   return charts.PieChart(
-//     seriesGauge,
-//     animate: true,
-//     defaultRenderer: new charts.ArcRendererConfig(
-//         arcWidth: 30, startAngle: 4 / 5 * 3.14, arcLength: 7 / 5 * 3.14),
-//   );
-// }
-
 Widget getBar(List<BarLoad> dataBar, String date) {
   var seriesBar = [
     charts.Series(
@@ -145,21 +123,3 @@ Widget getBar(List<BarLoad> dataBar, String date) {
     ],
   );
 }
-
-class RowData {
-  String date;
-  List<BarLoad> data;
-  RowData(this.date, this.data);
-}
-
-class BarLoad {
-  String resource;
-  int load_percent;
-  BarLoad(this.resource, this.load_percent);
-}
-
-// class GaugeSegment {
-//   int load; //如果为0，表示空白；如果为1，表示数据
-//   int load_percent;
-//   GaugeSegment(this.load, this.load_percent);
-// }
