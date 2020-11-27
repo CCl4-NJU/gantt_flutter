@@ -97,7 +97,7 @@ class LoadDemoPageState extends State<LoadDemoPage> {
 
     //在此处添加设备占用率
     var data = [_device_load, _human_load];
-    var text = ['设备负载率', '人员负载率'];
+    var text = ['Device Load', 'Human Load'];
     List<Widget> load_sum_items = [];
     Widget content;
 
@@ -135,7 +135,7 @@ class LoadDemoPageState extends State<LoadDemoPage> {
     ));
 
     listViews.add(new Center(
-      child: new Text('2017-10-01至2017-10-05'),
+      child: new Text('2017-10-01 to 2017-10-05'),
     ));
 
     for (int i = 0; i < _data_rows.length; i++) {

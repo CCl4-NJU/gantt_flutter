@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'models.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 var progress_colors = [
   Colors.lightBlue,
@@ -95,8 +96,38 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
           ? Colors.red
           : progress_colors[4 - (_delivery_rate ~/ 20)],
       footer: new Text(
-        '按期交货率：截至2017-10-01',
+        'On-time delivery rate：Till 2017-10-01',
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+      ),
+    ));
+
+    listViews.add(new Center(
+      child: new Column(
+        children: [
+          FlatButton(
+              onPressed: () {
+                DatePicker.showDatePicker(context,
+                    showTitleActions: true,
+                    minTime: DateTime(2017, 1, 1),
+                    maxTime: DateTime(2026, 12, 31),
+                    theme: DatePickerTheme(
+                        headerColor: Colors.blue,
+                        backgroundColor: Colors.white,
+                        itemStyle: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                        doneStyle:
+                            TextStyle(color: Colors.black, fontSize: 16)),
+                    onConfirm: (date) {
+                  print('confirm $date');
+                }, currentTime: DateTime.now(), locale: LocaleType.en);
+              },
+              child: Text(
+                'See information in another date...',
+                style: TextStyle(color: Colors.blue),
+              ))
+        ],
       ),
     ));
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_utils/date_utils.dart';
 import 'product_gantt_page.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'dart:math';
 
 import 'models.dart';
@@ -45,12 +46,41 @@ class GranttChartScreenState extends State<GranttChartScreen>
     return Scaffold(
       appBar: buildAppBar(),
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Center(
+              child: Column(
+                children: [
+                  FlatButton(
+                      onPressed: () {
+                        DatePicker.showDatePicker(context,
+                            showTitleActions: true,
+                            minTime: DateTime(2017, 1, 1),
+                            maxTime: DateTime(2026, 12, 31),
+                            theme: DatePickerTheme(
+                                headerColor: Colors.blue,
+                                backgroundColor: Colors.white,
+                                itemStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                                doneStyle: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16)), onChanged: (date) {
+                          print('change $date in time zone ' +
+                              date.timeZoneOffset.inHours.toString());
+                        }, onConfirm: (date) {
+                          print('confirm $date');
+                        }, currentTime: DateTime.now(), locale: LocaleType.en);
+                      },
+                      child: Text(
+                        'See information in another date...',
+                        style: TextStyle(color: Colors.blue),
+                      )),
+                ],
+              ),
+            ),
             Expanded(
               child: GanttChart(
                 animationController: animationController,
