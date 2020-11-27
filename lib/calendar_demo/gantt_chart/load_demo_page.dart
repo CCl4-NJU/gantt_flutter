@@ -24,8 +24,8 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   var _data_rows = <RowData>[];
   int _device_load = 0;
   int _human_load = 0;
-  DateTime _fromDate = DateTime(2017, 10, 1);
-  DateTime _toDate = DateTime(2017, 10, 7);
+  DateTime _from_date = DateTime(2017, 10, 1);
+  DateTime _to_date = DateTime(2017, 10, 5);
 
   @override
   void initState() {
@@ -66,8 +66,13 @@ class LoadDemoPageState extends State<LoadDemoPage> {
           start: DateTime.now(),
         ),
       );
-      _fromDate = picked.start;
-      _toDate = picked.end;
+
+      setState(() {
+        _from_date = picked.start;
+        _to_date = picked.end;
+      });
+      //TODO: Change chart data
+
       print(picked);
     }
 
@@ -114,16 +119,16 @@ class LoadDemoPageState extends State<LoadDemoPage> {
 
     listViews.add(new Center(
         child: new Column(children: [
-      new Text(DateFormat('yyyy-MM-dd').format(_fromDate) +
+      new Text(DateFormat('yyyy-MM-dd').format(_from_date) +
           ' to ' +
-          DateFormat('yyyy-MM-dd').format(_toDate)),
+          DateFormat('yyyy-MM-dd').format(_to_date)),
       RaisedButton(
         color: Colors.blue,
         textColor: Colors.white,
         onPressed: () {
           dateTimeRangePicker();
         },
-        child: Text("See resource load in another duration..."),
+        child: Text("View resource load in another duration..."),
       ),
     ])));
 

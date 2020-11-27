@@ -50,7 +50,14 @@ class GranttChartScreenState extends State<GranttChartScreen>
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
+      setState(() {
+        fromDate = picked;
+        toDate = fromDate.add(new Duration(days: 1));
+      });
       print(picked);
+      print(fromDate);
+      print(toDate);
+      //TODO: Change gantt data
     }
 
     return Scaffold(
@@ -68,7 +75,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
                     onPressed: () {
                       datePicker();
                     },
-                    child: Text("See resource gantt in another date..."),
+                    child: Text("View resource gantt in another date..."),
                   ),
                 ],
               ),

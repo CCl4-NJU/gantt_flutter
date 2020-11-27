@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'models.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 var progress_colors = [
@@ -18,52 +19,13 @@ class ProgressDemoPage extends StatefulWidget {
 class ProgressDemoPageState extends State<ProgressDemoPage> {
   var _data_items = <OrderData>[];
   var _delivery_rate = 0;
+  DateTime _selected_date = DateTime(2017, 10, 1);
 
   @override
   void initState() {
     super.initState();
     /** 以下是硬编码假数据 */
-    _data_items.add(new OrderData(
-        '418575',
-        [
-          new ProgressData('装配', 1),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418577',
-        [
-          new ProgressData('装配', 1),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '764486',
-        [
-          new ProgressData('装配', 0.6),
-        ],
-        true));
-    _data_items.add(new OrderData(
-        '762904',
-        [
-          new ProgressData('装配', 0.23),
-          new ProgressData('测试', 0.18),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418477',
-        [
-          new ProgressData('装配', 0.23),
-          new ProgressData('测试', 0),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418006',
-        [
-          new ProgressData('装配', 0.20),
-          new ProgressData('测试', 0.18),
-        ],
-        true));
-
-    _delivery_rate = 90;
+    getProgressData();
     /** 硬编码假数据结束 */
   }
 
@@ -87,6 +49,11 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
+      setState(() {
+        _selected_date = picked;
+      });
+
+      //TODO:Change progress data
       print(picked);
     }
 
@@ -106,7 +73,8 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
           ? Colors.red
           : progress_colors[4 - (_delivery_rate ~/ 20)],
       footer: new Text(
-        'On-time delivery rate：Till 2017-10-01',
+        'On-time delivery rate：Till ' +
+            DateFormat('yyyy-MM-dd').format(_selected_date),
         style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
       ),
     ));
@@ -120,7 +88,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
             onPressed: () {
               datePicker();
             },
-            child: Text("See order progress in another date..."),
+            child: Text("View order progress in another date..."),
           ),
         ],
       ),
@@ -169,5 +137,49 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       padding: EdgeInsets.all(16.0),
       child: content,
     );
+  }
+
+  getProgressData() {
+    _data_items.add(new OrderData(
+        '418575',
+        [
+          new ProgressData('装配', 1),
+        ],
+        false));
+    _data_items.add(new OrderData(
+        '418577',
+        [
+          new ProgressData('装配', 1),
+        ],
+        false));
+    _data_items.add(new OrderData(
+        '764486',
+        [
+          new ProgressData('装配', 0.6),
+        ],
+        true));
+    _data_items.add(new OrderData(
+        '762904',
+        [
+          new ProgressData('装配', 0.23),
+          new ProgressData('测试', 0.18),
+        ],
+        false));
+    _data_items.add(new OrderData(
+        '418477',
+        [
+          new ProgressData('装配', 0.23),
+          new ProgressData('测试', 0),
+        ],
+        false));
+    _data_items.add(new OrderData(
+        '418006',
+        [
+          new ProgressData('装配', 0.20),
+          new ProgressData('测试', 0.18),
+        ],
+        true));
+
+    _delivery_rate = 90;
   }
 }

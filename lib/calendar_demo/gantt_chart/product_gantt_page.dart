@@ -48,7 +48,14 @@ class ProductGranttScreenState extends State<ProductGanttPage>
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
+      setState(() {
+        fromDate = picked;
+        toDate = fromDate.add(new Duration(days: 1));
+      });
+      print(fromDate);
+      print(toDate);
       print(picked);
+      //TODO:Change gantt data
     }
 
     return Scaffold(
@@ -66,7 +73,7 @@ class ProductGranttScreenState extends State<ProductGanttPage>
                     onPressed: () {
                       datePicker();
                     },
-                    child: Text("See product gantt in another date..."),
+                    child: Text("View product gantt in another date..."),
                   ),
                 ],
               ),
