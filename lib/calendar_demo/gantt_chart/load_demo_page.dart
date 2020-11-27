@@ -135,7 +135,7 @@ class LoadDemoPageState extends State<LoadDemoPage> {
     ));
 
     listViews.add(new Center(
-      child: new Text('截至2017-10-01'),
+      child: new Text('2017-10-01至2017-10-05'),
     ));
 
     for (int i = 0; i < _data_rows.length; i++) {

@@ -16,6 +16,7 @@ class ProgressDemoPage extends StatefulWidget {
 
 class ProgressDemoPageState extends State<ProgressDemoPage> {
   var _data_items = <OrderData>[];
+  var _delivery_rate = 0;
 
   @override
   void initState() {
@@ -60,6 +61,8 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
           new ProgressData('测试', 0.18),
         ],
         true));
+
+    _delivery_rate = 90;
     /** 硬编码假数据结束 */
   }
 
@@ -76,10 +79,35 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   }
 
   Widget _buildCharts() {
+    List<Widget> listViews = <Widget>[];
+
+    listViews.add(new CircularPercentIndicator(
+      radius: 130.0,
+      animation: true,
+      animationDuration: 1200,
+      lineWidth: 15.0,
+      percent: _delivery_rate / 100,
+      center: new Text(
+        _delivery_rate.toString() + '%',
+        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+      ),
+      progressColor: _delivery_rate < 20
+          ? Colors.red
+          : progress_colors[4 - (_delivery_rate ~/ 20)],
+      footer: new Text(
+        '按期交货率：截至2017-10-01',
+        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+      ),
+    ));
+
+    for (int i = 0; i < _data_items.length; i++) {
+      listViews.add(_buildRow(_data_items[i]));
+    }
+
     return new ListView.builder(
-      itemCount: _data_items.length,
+      itemCount: listViews.length,
       itemBuilder: (context, i) {
-        return _buildRow(_data_items[i]);
+        return listViews[i];
       },
     );
   }
