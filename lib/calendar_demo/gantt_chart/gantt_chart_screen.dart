@@ -43,6 +43,16 @@ class GranttChartScreenState extends State<GranttChartScreen>
 
   @override
   Widget build(BuildContext context) {
+    datePicker() async {
+      DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+      );
+      print(picked);
+    }
+
     return Scaffold(
       appBar: buildAppBar(),
       body: GestureDetector(
@@ -52,32 +62,14 @@ class GranttChartScreenState extends State<GranttChartScreen>
             Center(
               child: Column(
                 children: [
-                  FlatButton(
-                      onPressed: () {
-                        DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(2017, 1, 1),
-                            maxTime: DateTime(2026, 12, 31),
-                            theme: DatePickerTheme(
-                                headerColor: Colors.blue,
-                                backgroundColor: Colors.white,
-                                itemStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                                doneStyle: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16)), onChanged: (date) {
-                          print('change $date in time zone ' +
-                              date.timeZoneOffset.inHours.toString());
-                        }, onConfirm: (date) {
-                          print('confirm $date');
-                        }, currentTime: DateTime.now(), locale: LocaleType.en);
-                      },
-                      child: Text(
-                        'See information in another date...',
-                        style: TextStyle(color: Colors.blue),
-                      )),
+                  RaisedButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      datePicker();
+                    },
+                    child: Text("See resource gantt in another date..."),
+                  ),
                 ],
               ),
             ),

@@ -41,15 +41,36 @@ class ProductGranttScreenState extends State<ProductGanttPage>
 
   @override
   Widget build(BuildContext context) {
+    datePicker() async {
+      DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+      );
+      print(picked);
+    }
+
     return Scaffold(
       appBar: buildAppBar(),
       body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Center(
+              child: Column(
+                children: [
+                  RaisedButton(
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      datePicker();
+                    },
+                    child: Text("See product gantt in another date..."),
+                  ),
+                ],
+              ),
+            ),
             Expanded(
               child: ProductGantt(
                 animationController: animationController,

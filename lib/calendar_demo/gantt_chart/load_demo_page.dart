@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'models.dart';
 
@@ -80,7 +81,7 @@ class LoadDemoPageState extends State<LoadDemoPage> {
         title: Text('Load Chart'),
       ),
       body: Stack(
-        children: [_buildCharts()],
+        children: [_buildCharts(context)],
       ),
     );
   }
@@ -92,7 +93,21 @@ class LoadDemoPageState extends State<LoadDemoPage> {
     );
   }
 
-  Widget _buildCharts() {
+  Widget _buildCharts(BuildContext context) {
+    dateTimeRangePicker() async {
+      DateTimeRange picked = await showDateRangePicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDateRange: DateTimeRange(
+          end: DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day + 13),
+          start: DateTime.now(),
+        ),
+      );
+      print(picked);
+    }
+
     List<Widget> listViews = <Widget>[];
 
     //在此处添加设备占用率
@@ -135,8 +150,17 @@ class LoadDemoPageState extends State<LoadDemoPage> {
     ));
 
     listViews.add(new Center(
-      child: new Text('2017-10-01 to 2017-10-05'),
-    ));
+        child: new Column(children: [
+      new Text('2017-10-01 to 2017-10-05'),
+      RaisedButton(
+        color: Colors.blue,
+        textColor: Colors.white,
+        onPressed: () {
+          dateTimeRangePicker();
+        },
+        child: Text("See resource load in another duration..."),
+      ),
+    ])));
 
     for (int i = 0; i < _data_rows.length; i++) {
       listViews.add(_buildRow(_data_rows[i]));

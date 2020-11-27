@@ -74,12 +74,22 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
         title: Text('Order Progress'),
       ),
       body: Center(
-        child: _buildCharts(),
+        child: _buildCharts(context),
       ),
     );
   }
 
-  Widget _buildCharts() {
+  Widget _buildCharts(BuildContext context) {
+    datePicker() async {
+      DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+      );
+      print(picked);
+    }
+
     List<Widget> listViews = <Widget>[];
 
     listViews.add(new CircularPercentIndicator(
@@ -104,29 +114,14 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
     listViews.add(new Center(
       child: new Column(
         children: [
-          FlatButton(
-              onPressed: () {
-                DatePicker.showDatePicker(context,
-                    showTitleActions: true,
-                    minTime: DateTime(2017, 1, 1),
-                    maxTime: DateTime(2026, 12, 31),
-                    theme: DatePickerTheme(
-                        headerColor: Colors.blue,
-                        backgroundColor: Colors.white,
-                        itemStyle: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                        doneStyle:
-                            TextStyle(color: Colors.black, fontSize: 16)),
-                    onConfirm: (date) {
-                  print('confirm $date');
-                }, currentTime: DateTime.now(), locale: LocaleType.en);
-              },
-              child: Text(
-                'See information in another date...',
-                style: TextStyle(color: Colors.blue),
-              ))
+          RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: () {
+              datePicker();
+            },
+            child: Text("See order progress in another date..."),
+          ),
         ],
       ),
     ));
