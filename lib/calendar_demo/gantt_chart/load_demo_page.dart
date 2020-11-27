@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'models.dart';
@@ -20,57 +21,17 @@ class LoadDemoPage extends StatefulWidget {
 }
 
 class LoadDemoPageState extends State<LoadDemoPage> {
-  final _data_rows = <RowData>[];
+  var _data_rows = <RowData>[];
   int _device_load = 0;
   int _human_load = 0;
+  DateTime _fromDate = DateTime(2017, 10, 1);
+  DateTime _toDate = DateTime(2017, 10, 7);
 
   @override
   void initState() {
     super.initState();
     /** 以下是硬编码假数据 */
-    _data_rows.add(new RowData('2017-10-01', [
-      new BarLoad('Line 1', 23),
-      new BarLoad('Line 2', 78),
-      new BarLoad('张三', 23),
-      new BarLoad('李四', 76),
-      new BarLoad('张扬', 23),
-      new BarLoad('李彤', 76),
-    ]));
-    _data_rows.add(new RowData('2017-10-02', [
-      new BarLoad('Line 1', 50),
-      new BarLoad('Line 2', 113),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-    _data_rows.add(new RowData('2017-10-03', [
-      new BarLoad('Line 1', 68),
-      new BarLoad('Line 2', 23),
-      new BarLoad('张三', 58),
-      new BarLoad('李四', 50),
-      new BarLoad('张扬', 58),
-      new BarLoad('李彤', 50),
-    ]));
-    _data_rows.add(new RowData('2017-10-04', [
-      new BarLoad('Line 1', 99),
-      new BarLoad('Line 2', 58),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-    _data_rows.add(new RowData('2017-10-05', [
-      new BarLoad('Line 1', 50),
-      new BarLoad('Line 2', 113),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-
-    _device_load = 75;
-    _human_load = 66;
+    getLoadData();
     /** 硬编码假数据结束 */
   }
 
@@ -105,6 +66,8 @@ class LoadDemoPageState extends State<LoadDemoPage> {
           start: DateTime.now(),
         ),
       );
+      _fromDate = picked.start;
+      _toDate = picked.end;
       print(picked);
     }
 
@@ -151,7 +114,9 @@ class LoadDemoPageState extends State<LoadDemoPage> {
 
     listViews.add(new Center(
         child: new Column(children: [
-      new Text('2017-10-01 to 2017-10-05'),
+      new Text(DateFormat('yyyy-MM-dd').format(_fromDate) +
+          ' to ' +
+          DateFormat('yyyy-MM-dd').format(_toDate)),
       RaisedButton(
         color: Colors.blue,
         textColor: Colors.white,
@@ -173,6 +138,52 @@ class LoadDemoPageState extends State<LoadDemoPage> {
         return listViews[i];
       },
     );
+  }
+
+  getLoadData() {
+    _data_rows.add(new RowData('2017-10-01', [
+      new BarLoad('Line 1', 23),
+      new BarLoad('Line 2', 78),
+      new BarLoad('张三', 23),
+      new BarLoad('李四', 76),
+      new BarLoad('张扬', 23),
+      new BarLoad('李彤', 76),
+    ]));
+    _data_rows.add(new RowData('2017-10-02', [
+      new BarLoad('Line 1', 50),
+      new BarLoad('Line 2', 113),
+      new BarLoad('张三', 50),
+      new BarLoad('李四', 99),
+      new BarLoad('张扬', 50),
+      new BarLoad('李彤', 99),
+    ]));
+    _data_rows.add(new RowData('2017-10-03', [
+      new BarLoad('Line 1', 68),
+      new BarLoad('Line 2', 23),
+      new BarLoad('张三', 58),
+      new BarLoad('李四', 50),
+      new BarLoad('张扬', 58),
+      new BarLoad('李彤', 50),
+    ]));
+    _data_rows.add(new RowData('2017-10-04', [
+      new BarLoad('Line 1', 99),
+      new BarLoad('Line 2', 58),
+      new BarLoad('张三', 50),
+      new BarLoad('李四', 99),
+      new BarLoad('张扬', 50),
+      new BarLoad('李彤', 99),
+    ]));
+    _data_rows.add(new RowData('2017-10-05', [
+      new BarLoad('Line 1', 50),
+      new BarLoad('Line 2', 113),
+      new BarLoad('张三', 50),
+      new BarLoad('李四', 99),
+      new BarLoad('张扬', 50),
+      new BarLoad('李彤', 99),
+    ]));
+
+    _device_load = 75;
+    _human_load = 66;
   }
 }
 
