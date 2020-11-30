@@ -16,11 +16,13 @@ class ProductGranttScreenState extends State<ProductGanttPage>
   AnimationController animationController;
 
   //设置时间
-  DateTime fromDate = DateTime(2018, 1, 1);
-  DateTime toDate = DateTime(2018, 1, 2);
+  DateTime fromDate;
+  DateTime toDate;
 
   List<Product> usersInChart;
   List<Resource> projectsInChart;
+
+  int _mock_index = 0;
 
   @override
   void initState() {
@@ -28,6 +30,9 @@ class ProductGranttScreenState extends State<ProductGanttPage>
     animationController = new AnimationController(
         duration: Duration(microseconds: 2000), vsync: this);
     animationController.forward();
+
+    fromDate = DateTime(2018, 1, 1);
+    toDate = DateTime(2018, 1, 2);
 
     projectsInChart = projects;
     usersInChart = users;
@@ -39,21 +44,35 @@ class ProductGranttScreenState extends State<ProductGanttPage>
     );
   }
 
+  Widget buildGantt() {
+    return new Expanded(
+      child: ProductGantt(
+        animationController: animationController,
+        fromDate: fromDate,
+        toDate: toDate,
+        data: projectsInChart,
+        usersInChart: usersInChart,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     datePicker() async {
       DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: fromDate,
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
       setState(() {
         fromDate = picked;
         toDate = fromDate.add(new Duration(days: 1));
+
+        _mock_index = 1 - _mock_index;
+        projectsInChart = proj_arr[_mock_index];
       });
-      print(fromDate);
-      print(toDate);
+
       print(picked);
       //TODO:Change gantt data
     }
@@ -78,15 +97,7 @@ class ProductGranttScreenState extends State<ProductGanttPage>
                 ],
               ),
             ),
-            Expanded(
-              child: ProductGantt(
-                animationController: animationController,
-                fromDate: fromDate,
-                toDate: toDate,
-                data: projectsInChart,
-                usersInChart: usersInChart,
-              ),
-            ),
+            buildGantt(),
           ],
         ),
       ),
@@ -173,6 +184,7 @@ class ProductGantt extends StatelessWidget {
     for (int i = 0; i < data.length; i++) {
       var remainingWidth =
           calculateRemainingWidth(data[i].startTime, data[i].endTime);
+
       if (remainingWidth > 0) {
         chartBars.add(Container(
           decoration: BoxDecoration(
@@ -212,7 +224,7 @@ class ProductGantt extends StatelessWidget {
     headerItems.add(Container(
       width: chartViewWidth / viewRangeToFitScreen,
       child: new Text(
-        'NAME',
+        'PRODUCT',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 10.0,
@@ -224,9 +236,11 @@ class ProductGantt extends StatelessWidget {
       headerItems.add(Container(
         width: chartViewWidth / viewRangeToFitScreen,
         child: new Text(
-          tempDate.month.toString() +
+          tempDate.year.toString() +
               '/' +
-              tempDate.year.toString() +
+              tempDate.month.toString() +
+              '/' +
+              tempDate.day.toString() +
               ' ' +
               tempDate.hour.toString() +
               ':' +
@@ -325,13 +339,13 @@ class ProductGantt extends StatelessWidget {
     );
   }
 
-  List<Widget> buildChartContent(double chartViewWidth) {
+  List<Widget> buildChartContent(double chartViewWidth, BuildContext context) {
     List<Widget> chartContent = new List();
 
     usersInChart.forEach((user) {
       List<Resource> projectsOfUser = new List();
 
-      projectsOfUser = projects
+      projectsOfUser = data
           .where((project) => project.productions.indexOf(user.id) != -1)
           .toList();
 
@@ -355,7 +369,7 @@ class ProductGantt extends StatelessWidget {
 
     return Container(
       child: MediaQuery.removePadding(
-        child: ListView(children: buildChartContent(chartViewWidth)),
+        child: ListView(children: buildChartContent(chartViewWidth, context)),
         removeTop: true,
         context: context,
       ),
@@ -364,62 +378,22 @@ class ProductGantt extends StatelessWidget {
 }
 
 var users = [
-  // Product(id: 1, name: '产品1'),
-  // Product(id: 2, name: '产品2'),
   Product(id: 3, name: '产品3'),
-  // Product(id: 4, name: '产品4'),
-  // Product(id: 5, name: '产品5'),
 ];
 
 var projects = [
-  // Resource(
-  //     id: 1,
-  //     name: 'Line 1',
-  //     startTime: DateTime(2018, 1, 1, 7, 0),
-  //     endTime: DateTime(2018, 1, 1, 9, 0),
-  //     productions: [1]),
-  // Resource(
-  //     id: 2,
-  //     name: 'Line 1',
-  //     startTime: DateTime(2018, 1, 1, 9, 0),
-  //     endTime: DateTime(2018, 1, 1, 17, 0),
-  //     productions: [2]),
   Resource(
       id: 1,
       name: 'Line 1',
       startTime: DateTime(2018, 1, 1, 18, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
       productions: [3]),
-  // Resource(
-  //     id: 4,
-  //     name: 'Line 1',
-  //     startTime: DateTime(2018, 1, 1, 21, 0),
-  //     endTime: DateTime(2018, 1, 1, 23, 0),
-  //     productions: [4]),
   Resource(
       id: 2,
       name: 'Line 4',
       startTime: DateTime(2018, 1, 1, 9, 0),
       endTime: DateTime(2018, 1, 1, 11, 0),
       productions: [3]),
-  // Resource(
-  //     id: 6,
-  //     name: '李四',
-  //     startTime: DateTime(2018, 1, 1, 7, 0),
-  //     endTime: DateTime(2018, 1, 1, 9, 0),
-  //     productions: [1]),
-  // Resource(
-  //     id: 7,
-  //     name: '李四',
-  //     startTime: DateTime(2018, 1, 1, 9, 0),
-  //     endTime: DateTime(2018, 1, 1, 17, 0),
-  //     productions: [2]),
-  // Resource(
-  //     id: 8,
-  //     name: '李四',
-  //     startTime: DateTime(2018, 1, 1, 21, 0),
-  //     endTime: DateTime(2018, 1, 1, 23, 0),
-  //     productions: [5]),
   Resource(
       id: 3,
       name: '小明',
@@ -438,10 +412,39 @@ var projects = [
       startTime: DateTime(2018, 1, 1, 19, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
       productions: [3]),
-  // Resource(
-  //     id: 12,
-  //     name: '张三',
-  //     startTime: DateTime(2018, 1, 1, 21, 0),
-  //     endTime: DateTime(2018, 1, 1, 23, 0),
-  //     productions: [4]),
 ];
+
+var projects2 = [
+  Resource(
+      id: 1,
+      name: 'Line 2',
+      startTime: DateTime(2018, 1, 2, 12, 0),
+      endTime: DateTime(2018, 1, 2, 15, 0),
+      productions: [3]),
+  Resource(
+      id: 2,
+      name: 'Line 4',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 5, 0),
+      productions: [3]),
+  Resource(
+      id: 3,
+      name: '小胖',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 5, 0),
+      productions: [3]),
+  Resource(
+      id: 4,
+      name: '小胖',
+      startTime: DateTime(2018, 1, 2, 12, 0),
+      endTime: DateTime(2018, 1, 2, 13, 0),
+      productions: [3]),
+  Resource(
+      id: 5,
+      name: '三仔',
+      startTime: DateTime(2018, 1, 2, 13, 0),
+      endTime: DateTime(2018, 1, 2, 15, 0),
+      productions: [3]),
+];
+
+var proj_arr = [projects, projects2];
