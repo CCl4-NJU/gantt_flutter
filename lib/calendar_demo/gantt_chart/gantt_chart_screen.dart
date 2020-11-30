@@ -16,13 +16,16 @@ class GranttChartScreen extends StatefulWidget {
 class GranttChartScreenState extends State<GranttChartScreen>
     with TickerProviderStateMixin {
   AnimationController animationController;
+  Widget ganttWidget;
 
   //设置时间
-  DateTime fromDate = DateTime(2018, 1, 1);
-  DateTime toDate = DateTime(2018, 1, 2);
+  DateTime fromDate;
+  DateTime toDate;
 
   List<Product> usersInChart;
   List<Resource> projectsInChart;
+
+  int _mock_index = 0; //用于模拟动态数据
 
   @override
   void initState() {
@@ -31,8 +34,13 @@ class GranttChartScreenState extends State<GranttChartScreen>
         duration: Duration(microseconds: 2000), vsync: this);
     animationController.forward();
 
-    projectsInChart = projects;
-    usersInChart = users;
+    fromDate = DateTime(2018, 1, 1);
+    toDate = DateTime(2018, 1, 2);
+
+    projectsInChart = proj_arr[_mock_index];
+    usersInChart = user_arr[_mock_index];
+
+    ganttWidget = buildGantt();
   }
 
   Widget buildAppBar() {
@@ -41,22 +49,38 @@ class GranttChartScreenState extends State<GranttChartScreen>
     );
   }
 
+  Widget buildGantt() {
+    return new Expanded(
+      child: GanttChart(
+        animationController: animationController,
+        fromDate: fromDate,
+        toDate: toDate,
+        data: projectsInChart,
+        usersInChart: usersInChart,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     datePicker() async {
       DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: fromDate,
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
       setState(() {
         fromDate = picked;
         toDate = fromDate.add(new Duration(days: 1));
+
+        _mock_index = 1 - _mock_index;
+        usersInChart = user_arr[_mock_index];
+        projectsInChart = proj_arr[_mock_index];
+
+        ganttWidget = buildGantt();
       });
       print(picked);
-      print(fromDate);
-      print(toDate);
       //TODO: Change gantt data
     }
 
@@ -80,15 +104,7 @@ class GranttChartScreenState extends State<GranttChartScreen>
                 ],
               ),
             ),
-            Expanded(
-              child: GanttChart(
-                animationController: animationController,
-                fromDate: fromDate,
-                toDate: toDate,
-                data: projectsInChart,
-                usersInChart: usersInChart,
-              ),
-            ),
+            ganttWidget,
           ],
         ),
       ),
@@ -175,6 +191,7 @@ class GanttChart extends StatelessWidget {
     for (int i = 0; i < data.length; i++) {
       var remainingWidth =
           calculateRemainingWidth(data[i].startTime, data[i].endTime);
+
       if (remainingWidth > 0) {
         chartBars.add(Container(
           decoration: BoxDecoration(
@@ -214,7 +231,7 @@ class GanttChart extends StatelessWidget {
     headerItems.add(Container(
       width: chartViewWidth / viewRangeToFitScreen,
       child: new Text(
-        'NAME',
+        'PRODUCT',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontSize: 10.0,
@@ -226,9 +243,11 @@ class GanttChart extends StatelessWidget {
       headerItems.add(Container(
         width: chartViewWidth / viewRangeToFitScreen,
         child: new Text(
-          tempDate.month.toString() +
+          tempDate.year.toString() +
               '/' +
-              tempDate.year.toString() +
+              tempDate.month.toString() +
+              '/' +
+              tempDate.day.toString() +
               ' ' +
               tempDate.hour.toString() +
               ':' +
@@ -341,7 +360,8 @@ class GanttChart extends StatelessWidget {
     usersInChart.forEach((user) {
       List<Resource> projectsOfUser = new List();
 
-      projectsOfUser = projects
+      //关键代码：tmd作者不小心把这里写死了...
+      projectsOfUser = data
           .where((project) => project.productions.indexOf(user.id) != -1)
           .toList();
 
@@ -379,6 +399,13 @@ var users = [
   Product(id: 3, name: '产品3'),
   Product(id: 4, name: '产品4'),
   Product(id: 5, name: '产品5'),
+];
+
+var users2 = [
+  Product(id: 1, name: '产品400375'),
+  Product(id: 2, name: '产品300786'),
+  Product(id: 3, name: '产品300787'),
+  Product(id: 4, name: '产品300788'),
 ];
 
 //productions：一条生产线同一时段可以同时生产多个产品，只是示例刚好没有这种情况
@@ -457,3 +484,75 @@ var projects = [
       endTime: DateTime(2018, 1, 1, 23, 0),
       productions: [4]),
 ];
+
+var projects2 = [
+  Resource(
+      id: 1,
+      name: 'Line 2',
+      startTime: DateTime(2018, 1, 2, 1, 0),
+      endTime: DateTime(2018, 1, 2, 3, 0),
+      productions: [1]),
+  Resource(
+      id: 2,
+      name: 'Line 2',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 11, 0),
+      productions: [2]),
+  Resource(
+      id: 3,
+      name: 'Line 2',
+      startTime: DateTime(2018, 1, 2, 12, 0),
+      endTime: DateTime(2018, 1, 2, 15, 0),
+      productions: [3]),
+  Resource(
+      id: 4,
+      name: 'Line 2',
+      startTime: DateTime(2018, 1, 2, 15, 0),
+      endTime: DateTime(2018, 1, 2, 17, 0),
+      productions: [4]),
+  Resource(
+      id: 5,
+      name: 'Line 4',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 5, 0),
+      productions: [3]),
+  Resource(
+      id: 6,
+      name: '李四',
+      startTime: DateTime(2018, 1, 2, 1, 0),
+      endTime: DateTime(2018, 1, 2, 3, 0),
+      productions: [1]),
+  Resource(
+      id: 7,
+      name: '李四',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 11, 0),
+      productions: [2]),
+  Resource(
+      id: 8,
+      name: '小明',
+      startTime: DateTime(2018, 1, 2, 3, 0),
+      endTime: DateTime(2018, 1, 2, 5, 0),
+      productions: [3]),
+  Resource(
+      id: 9,
+      name: '小明',
+      startTime: DateTime(2018, 1, 2, 12, 0),
+      endTime: DateTime(2018, 1, 2, 13, 0),
+      productions: [3]),
+  Resource(
+      id: 10,
+      name: '张三',
+      startTime: DateTime(2018, 1, 2, 13, 0),
+      endTime: DateTime(2018, 1, 2, 15, 0),
+      productions: [3]),
+  Resource(
+      id: 11,
+      name: '张三',
+      startTime: DateTime(2018, 1, 2, 15, 0),
+      endTime: DateTime(2018, 1, 2, 17, 0),
+      productions: [4]),
+];
+
+var user_arr = [users, users2];
+var proj_arr = [projects, projects2];
