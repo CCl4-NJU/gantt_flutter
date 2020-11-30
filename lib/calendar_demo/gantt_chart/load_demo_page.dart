@@ -25,7 +25,9 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   int _device_load = 0;
   int _human_load = 0;
   DateTime _from_date = DateTime(2017, 10, 1);
-  DateTime _to_date = DateTime(2017, 10, 5);
+  DateTime _to_date = DateTime(2017, 10, 7);
+
+  int _mock_index = 0;
 
   @override
   void initState() {
@@ -61,15 +63,21 @@ class LoadDemoPageState extends State<LoadDemoPage> {
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
         initialDateRange: DateTimeRange(
-          end: DateTime(DateTime.now().year, DateTime.now().month,
-              DateTime.now().day + 13),
-          start: DateTime.now(),
+          end: _to_date,
+          start: _from_date,
         ),
       );
 
       setState(() {
         _from_date = picked.start;
         _to_date = picked.end;
+
+        _mock_index = 1 - _mock_index;
+
+        _data_rows.clear();
+        _data_rows.addAll(rows_arr[_mock_index]);
+        _device_load = load_arr[_mock_index][0];
+        _human_load = load_arr[_mock_index][1];
       });
       //TODO: Change chart data
 
@@ -146,49 +154,9 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 
   getLoadData() {
-    _data_rows.add(new RowData('2017-10-01', [
-      new BarLoad('Line 1', 23),
-      new BarLoad('Line 2', 78),
-      new BarLoad('张三', 23),
-      new BarLoad('李四', 76),
-      new BarLoad('张扬', 23),
-      new BarLoad('李彤', 76),
-    ]));
-    _data_rows.add(new RowData('2017-10-02', [
-      new BarLoad('Line 1', 50),
-      new BarLoad('Line 2', 113),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-    _data_rows.add(new RowData('2017-10-03', [
-      new BarLoad('Line 1', 68),
-      new BarLoad('Line 2', 23),
-      new BarLoad('张三', 58),
-      new BarLoad('李四', 50),
-      new BarLoad('张扬', 58),
-      new BarLoad('李彤', 50),
-    ]));
-    _data_rows.add(new RowData('2017-10-04', [
-      new BarLoad('Line 1', 99),
-      new BarLoad('Line 2', 58),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-    _data_rows.add(new RowData('2017-10-05', [
-      new BarLoad('Line 1', 50),
-      new BarLoad('Line 2', 113),
-      new BarLoad('张三', 50),
-      new BarLoad('李四', 99),
-      new BarLoad('张扬', 50),
-      new BarLoad('李彤', 99),
-    ]));
-
-    _device_load = 75;
-    _human_load = 66;
+    _data_rows.addAll(rows);
+    _device_load = loadSums[0];
+    _human_load = loadSums[1];
   }
 }
 
@@ -217,3 +185,111 @@ Widget getBar(List<BarLoad> dataBar, String date) {
     barRendererDecorator: new charts.BarLabelDecorator<String>(),
   );
 }
+
+var rows = [
+  new RowData('2017-10-01', [
+    new BarLoad('Line 1', 23),
+    new BarLoad('Line 2', 78),
+    new BarLoad('张三', 23),
+    new BarLoad('李四', 76),
+    new BarLoad('张扬', 23),
+    new BarLoad('李彤', 76),
+  ]),
+  new RowData('2017-10-02', [
+    new BarLoad('Line 1', 50),
+    new BarLoad('Line 2', 113),
+    new BarLoad('张三', 50),
+    new BarLoad('李四', 99),
+    new BarLoad('张扬', 50),
+    new BarLoad('李彤', 99),
+  ]),
+  new RowData('2017-10-03', [
+    new BarLoad('Line 1', 68),
+    new BarLoad('Line 2', 23),
+    new BarLoad('张三', 58),
+    new BarLoad('李四', 50),
+    new BarLoad('张扬', 58),
+    new BarLoad('李彤', 50),
+  ]),
+  new RowData('2017-10-04', [
+    new BarLoad('Line 1', 99),
+    new BarLoad('Line 2', 58),
+    new BarLoad('张三', 50),
+    new BarLoad('李四', 99),
+    new BarLoad('张扬', 50),
+    new BarLoad('李彤', 99),
+  ]),
+  new RowData('2017-10-05', [
+    new BarLoad('Line 1', 50),
+    new BarLoad('Line 2', 113),
+    new BarLoad('张三', 50),
+    new BarLoad('李四', 99),
+    new BarLoad('张扬', 50),
+    new BarLoad('李彤', 99),
+  ]),
+  new RowData('2017-10-06', [
+    new BarLoad('Line 1', 80),
+    new BarLoad('Line 2', 93),
+  ]),
+  new RowData('2017-10-07', [
+    new BarLoad('Line 1', 70),
+    new BarLoad('Line 2', 83),
+  ]),
+];
+
+var rows2 = [
+  new RowData('2017-10-08', [
+    new BarLoad('Line 11', 13),
+    new BarLoad('Line 22', 28),
+    new BarLoad('唐僧', 43),
+    new BarLoad('悟空', 66),
+    new BarLoad('八戒', 83),
+    new BarLoad('沙僧', 100),
+  ]),
+  new RowData('2017-10-09', [
+    new BarLoad('Line 11', 100),
+    new BarLoad('Line 22', 86),
+    new BarLoad('唐僧', 61),
+    new BarLoad('悟空', 58),
+    new BarLoad('八戒', 47),
+    new BarLoad('沙僧', 30),
+  ]),
+  new RowData('2017-10-10', [
+    new BarLoad('Line 11', 68),
+    new BarLoad('Line 22', 23),
+    new BarLoad('唐僧', 58),
+    new BarLoad('悟空', 50),
+    new BarLoad('八戒', 58),
+    new BarLoad('沙僧', 50),
+  ]),
+  new RowData('2017-10-11', [
+    new BarLoad('Line 11', 99),
+    new BarLoad('Line 22', 58),
+    new BarLoad('唐僧', 50),
+    new BarLoad('悟空', 99),
+    new BarLoad('八戒', 50),
+    new BarLoad('沙僧', 99),
+  ]),
+  new RowData('2017-10-12', [
+    new BarLoad('Line 11', 50),
+    new BarLoad('Line 22', 73),
+    new BarLoad('唐僧', 50),
+    new BarLoad('悟空', 99),
+    new BarLoad('八戒', 50),
+    new BarLoad('沙僧', 99),
+  ]),
+  new RowData('2017-10-13', [
+    new BarLoad('Line 11', 80),
+    new BarLoad('Line 22', 93),
+  ]),
+  new RowData('2017-10-14', [
+    new BarLoad('Line 11', 70),
+    new BarLoad('Line 22', 83),
+  ]),
+];
+
+var loadSums = [75, 66];
+var loadSums2 = [81, 48];
+
+var rows_arr = [rows, rows2];
+var load_arr = [loadSums, loadSums2];
