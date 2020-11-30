@@ -21,6 +21,8 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   var _delivery_rate = 0;
   DateTime _selected_date = DateTime(2017, 10, 1);
 
+  int _mock_index = 0;
+
   @override
   void initState() {
     super.initState();
@@ -45,12 +47,17 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
     datePicker() async {
       DateTime picked = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: _selected_date,
         firstDate: DateTime(DateTime.now().year - 5),
         lastDate: DateTime(DateTime.now().year + 5),
       );
       setState(() {
         _selected_date = picked;
+
+        _mock_index = 1 - _mock_index;
+        _data_items.clear();
+        _data_items.addAll(order_arr[_mock_index]);
+        _delivery_rate = rate_arr[_mock_index];
       });
 
       //TODO:Change progress data
@@ -140,46 +147,138 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   }
 
   getProgressData() {
-    _data_items.add(new OrderData(
-        '418575',
-        [
-          new ProgressData('装配', 1),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418577',
-        [
-          new ProgressData('装配', 1),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '764486',
-        [
-          new ProgressData('装配', 0.6),
-        ],
-        true));
-    _data_items.add(new OrderData(
-        '762904',
-        [
-          new ProgressData('装配', 0.23),
-          new ProgressData('测试', 0.18),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418477',
-        [
-          new ProgressData('装配', 0.23),
-          new ProgressData('测试', 0),
-        ],
-        false));
-    _data_items.add(new OrderData(
-        '418006',
-        [
-          new ProgressData('装配', 0.20),
-          new ProgressData('测试', 0.18),
-        ],
-        true));
+    _data_items.addAll(orders);
 
-    _delivery_rate = 90;
+    _delivery_rate = rate;
   }
 }
+
+var orders = [
+  new OrderData(
+      '418575',
+      [
+        new ProgressData('装配', 1),
+      ],
+      false),
+  new OrderData(
+      '418577',
+      [
+        new ProgressData('装配', 1),
+      ],
+      false),
+  new OrderData(
+      '764486',
+      [
+        new ProgressData('装配', 0.6),
+      ],
+      true),
+  new OrderData(
+      '762904',
+      [
+        new ProgressData('装配', 0.23),
+        new ProgressData('测试', 0.18),
+      ],
+      false),
+  new OrderData(
+      '418477',
+      [
+        new ProgressData('装配', 0.23),
+        new ProgressData('测试', 0),
+      ],
+      false),
+  new OrderData(
+      '418006',
+      [
+        new ProgressData('装配', 0.20),
+        new ProgressData('测试', 0.18),
+      ],
+      true),
+];
+var orders2 = [
+  new OrderData(
+      '318575',
+      [
+        new ProgressData('装配', 1),
+      ],
+      false),
+  new OrderData(
+      '318577',
+      [
+        new ProgressData('装配', 0.8),
+      ],
+      false),
+  new OrderData(
+      '864486',
+      [
+        new ProgressData('装配', 0.6),
+        new ProgressData('测试', 0.4),
+        new ProgressData('抽样', 0.2),
+      ],
+      false),
+  new OrderData(
+      '862904',
+      [
+        new ProgressData('装配', 0.23),
+        new ProgressData('测试', 0.18),
+        new ProgressData('质检', 0),
+      ],
+      false),
+  new OrderData(
+      '318477',
+      [
+        new ProgressData('装配', 0.23),
+        new ProgressData('测试', 0),
+      ],
+      false),
+  new OrderData(
+      '318006',
+      [
+        new ProgressData('装配', 0.20),
+        new ProgressData('测试', 0.18),
+        new ProgressData('组合', 0.1),
+        new ProgressData('质检', 0),
+      ],
+      true),
+  new OrderData(
+      '218006',
+      [
+        new ProgressData('装配', 0.90),
+        new ProgressData('测试', 0.88),
+        new ProgressData('组合', 0.81),
+        new ProgressData('质检', 0.75),
+      ],
+      false),
+  new OrderData(
+      '218007',
+      [
+        new ProgressData('装配', 0.90),
+        new ProgressData('测试', 0.78),
+        new ProgressData('质检', 0.65),
+      ],
+      false),
+  new OrderData(
+      '218008',
+      [
+        new ProgressData('装配', 0.90),
+      ],
+      false),
+  new OrderData(
+      '218009',
+      [
+        new ProgressData('装配', 1),
+      ],
+      false),
+  new OrderData(
+      '218010',
+      [
+        new ProgressData('装配', 0.1),
+        new ProgressData('测试', 0.95),
+      ],
+      false),
+];
+
+var rate = 67;
+var rate2 = 91;
+
+var order_arr = [orders, orders2];
+var rate_arr = [rate, rate2];
