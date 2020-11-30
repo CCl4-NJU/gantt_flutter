@@ -4,7 +4,16 @@ import 'dart:math';
 
 import 'models.dart';
 
+String product_id;
+
 class ProductGanttPage extends StatefulWidget {
+  final String product_id;
+  final DateTime from_date;
+
+  ProductGanttPage(
+      {Key key, @required this.product_id, @required this.from_date})
+      : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return new ProductGranttScreenState();
@@ -23,6 +32,7 @@ class ProductGranttScreenState extends State<ProductGanttPage>
   List<Resource> projectsInChart;
 
   int _mock_index = 0;
+  int _prod_index = 0;
 
   @override
   void initState() {
@@ -31,11 +41,26 @@ class ProductGranttScreenState extends State<ProductGanttPage>
         duration: Duration(microseconds: 2000), vsync: this);
     animationController.forward();
 
-    fromDate = DateTime(2018, 1, 1);
-    toDate = DateTime(2018, 1, 2);
+    fromDate = widget.from_date;
+    toDate = fromDate.add(new Duration(days: 1));
 
-    projectsInChart = projects;
-    usersInChart = users;
+    print(widget.product_id + ' : ' + widget.from_date.toString());
+    /** 判断产品id和日期的部分 */
+    if (widget.product_id.toString() == '3') {
+      if (fromDate.compareTo(DateTime(2018, 1, 1)) > 0) {
+        _mock_index = 1;
+      }
+    } else {
+      _prod_index = 1;
+      if (fromDate.compareTo(DateTime(2018, 1, 1)) > 0) {
+        _mock_index = 1;
+      }
+    }
+
+    // projectsInChart = projects;
+    // usersInChart = users;
+    projectsInChart = resource_arr[_prod_index][_mock_index];
+    usersInChart = product_arr[_prod_index];
   }
 
   Widget buildAppBar() {
@@ -70,7 +95,9 @@ class ProductGranttScreenState extends State<ProductGanttPage>
         toDate = fromDate.add(new Duration(days: 1));
 
         _mock_index = 1 - _mock_index;
-        projectsInChart = proj_arr[_mock_index];
+        // projectsInChart = proj_arr[_mock_index];
+
+        projectsInChart = resource_arr[_prod_index][_mock_index];
       });
 
       print(picked);
@@ -377,6 +404,7 @@ class ProductGantt extends StatelessWidget {
   }
 }
 
+/** 产品3数据 */
 var users = [
   Product(id: 3, name: '产品3'),
 ];
@@ -447,4 +475,43 @@ var projects2 = [
       productions: [3]),
 ];
 
+/** 产品4数据 */
+var users2 = [
+  Product(id: 4, name: '产品4'),
+];
+
+var projects21 = [
+  Resource(
+      id: 1,
+      name: 'Line 1',
+      startTime: DateTime(2018, 1, 1, 21, 0),
+      endTime: DateTime(2018, 1, 1, 23, 0),
+      productions: [4]),
+  Resource(
+      id: 2,
+      name: '张三',
+      startTime: DateTime(2018, 1, 1, 21, 0),
+      endTime: DateTime(2018, 1, 1, 23, 0),
+      productions: [4]),
+];
+
+var projects22 = [
+  Resource(
+      id: 1,
+      name: 'Line 1',
+      startTime: DateTime(2018, 1, 2, 15, 0),
+      endTime: DateTime(2018, 1, 2, 17, 0),
+      productions: [4]),
+  Resource(
+      id: 2,
+      name: '张三',
+      startTime: DateTime(2018, 1, 2, 15, 0),
+      endTime: DateTime(2018, 1, 2, 17, 0),
+      productions: [4]),
+];
+
 var proj_arr = [projects, projects2];
+var proj_arr2 = [projects21, projects22];
+
+var product_arr = [users, users2];
+var resource_arr = [proj_arr, proj_arr2];

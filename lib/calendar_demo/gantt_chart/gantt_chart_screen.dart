@@ -299,7 +299,11 @@ class GanttChart extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ProductGanttPage()),
+            MaterialPageRoute(
+                builder: (context) => ProductGanttPage(
+                      product_id: user.id.toString(),
+                      from_date: fromDate,
+                    )),
           );
         },
         child: new Container(
@@ -402,10 +406,10 @@ var users = [
 ];
 
 var users2 = [
-  Product(id: 1, name: '产品400375'),
-  Product(id: 2, name: '产品300786'),
-  Product(id: 3, name: '产品300787'),
-  Product(id: 4, name: '产品300788'),
+  Product(id: 1, name: '产品1'),
+  Product(id: 2, name: '产品2'),
+  Product(id: 3, name: '产品3'),
+  Product(id: 4, name: '产品4'),
 ];
 
 //productions：一条生产线同一时段可以同时生产多个产品，只是示例刚好没有这种情况
