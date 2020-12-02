@@ -57,8 +57,13 @@ class Progress {
 }
 
 Future<ProgressPageData> fetchProgressData(
-    http.Client client, String date) async {
-  final response = await client.get('localhost:8080/progress/' + date);
+    http.Client client, DateTime date) async {
+  String date_url = date.year.toString() +
+      '-' +
+      date.month.toString() +
+      '-' +
+      date.day.toString();
+  final response = await client.get('localhost:8080/progress/' + date_url);
   // print(date);
   if (response.statusCode == 200) {
     return ProgressPageData.fromJson(jsonDecode(response.body));

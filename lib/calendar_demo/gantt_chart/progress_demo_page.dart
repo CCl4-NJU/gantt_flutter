@@ -26,26 +26,20 @@ class ProgressDemoPage extends StatefulWidget {
 class ProgressDemoPageState extends State<ProgressDemoPage> {
   Future<ProgressPageData> futureProgress;
 
-  var _data_items = <OrderData>[];
-  var _delivery_rate = 0;
-  DateTime _selected_date = DateTime(2017, 10, 1);
-
-  int _mock_index = 0;
+  List<OrderData> _data_items;
+  int _delivery_rate;
+  DateTime _selected_date;
 
   @override
   void initState() {
     super.initState();
-    /** 以下是硬编码假数据 */
-    // getProgressData();
+
+    _selected_date = DateTime(2017, 10, 1);
+    _delivery_rate = 0;
+    _data_items = <OrderData>[];
+
     mockConfig();
-    String date_url = _selected_date.year.toString() +
-        '-' +
-        _selected_date.month.toString() +
-        '-' +
-        _selected_date.day.toString();
-    futureProgress = fetchProgressData(client, date_url);
-    // print('get success');
-    /** 硬编码假数据结束 */
+    futureProgress = fetchProgressData(client, _selected_date);
   }
 
   @override
@@ -54,14 +48,12 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       appBar: AppBar(
         title: Text('Order Progress'),
       ),
-      // body: Center(
-      //   child: _buildCharts(context),
-      // ),
       body: Center(
         child: FutureBuilder<ProgressPageData>(
           future: futureProgress,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              _data_items.clear();
               _data_items.addAll(snapshot.data.orders
                   .map((item) => OrderData(
                       item.id,
@@ -95,14 +87,8 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       setState(() {
         _selected_date = picked;
 
-        _mock_index = 1 - _mock_index;
-        _data_items.clear();
-        _data_items.addAll(order_arr[_mock_index]);
-        _delivery_rate = rate_arr[_mock_index];
+        futureProgress = fetchProgressData(client, _selected_date);
       });
-
-      //TODO:Change progress data
-      print(picked);
     }
 
     List<Widget> listViews = <Widget>[];
@@ -170,7 +156,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
         animation: true,
         animationDuration: 500,
         percent: percent,
-        leading: new Text(i == 0 ? ('订单' + data.id + ': ') : ' '),
+        leading: new Text(i == 0 ? ('Order ' + data.id + ': ') : ' '),
         center: Text(center_str),
         progressColor: data.delay
             ? Colors.red
@@ -188,147 +174,15 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       child: content,
     );
   }
-
-  getProgressData() {
-    _data_items.addAll(orders);
-
-    _delivery_rate = rate;
-  }
 }
 
-var orders = [
-  new OrderData(
-      '418575',
-      [
-        new ProgressData('装配', 1),
-      ],
-      false),
-  new OrderData(
-      '418577',
-      [
-        new ProgressData('装配', 1),
-      ],
-      false),
-  new OrderData(
-      '764486',
-      [
-        new ProgressData('装配', 0.6),
-      ],
-      true),
-  new OrderData(
-      '762904',
-      [
-        new ProgressData('装配', 0.23),
-        new ProgressData('测试', 0.18),
-      ],
-      false),
-  new OrderData(
-      '418477',
-      [
-        new ProgressData('装配', 0.23),
-        new ProgressData('测试', 0),
-      ],
-      false),
-  new OrderData(
-      '418006',
-      [
-        new ProgressData('装配', 0.20),
-        new ProgressData('测试', 0.18),
-      ],
-      true),
-];
-var orders2 = [
-  new OrderData(
-      '318575',
-      [
-        new ProgressData('装配', 1),
-      ],
-      false),
-  new OrderData(
-      '318577',
-      [
-        new ProgressData('装配', 0.8),
-      ],
-      false),
-  new OrderData(
-      '864486',
-      [
-        new ProgressData('装配', 0.6),
-        new ProgressData('测试', 0.4),
-        new ProgressData('抽样', 0.2),
-      ],
-      false),
-  new OrderData(
-      '862904',
-      [
-        new ProgressData('装配', 0.23),
-        new ProgressData('测试', 0.18),
-        new ProgressData('质检', 0),
-      ],
-      false),
-  new OrderData(
-      '318477',
-      [
-        new ProgressData('装配', 0.23),
-        new ProgressData('测试', 0),
-      ],
-      false),
-  new OrderData(
-      '318006',
-      [
-        new ProgressData('装配', 0.20),
-        new ProgressData('测试', 0.18),
-        new ProgressData('组合', 0.1),
-        new ProgressData('质检', 0),
-      ],
-      true),
-  new OrderData(
-      '218006',
-      [
-        new ProgressData('装配', 0.90),
-        new ProgressData('测试', 0.88),
-        new ProgressData('组合', 0.81),
-        new ProgressData('质检', 0.75),
-      ],
-      false),
-  new OrderData(
-      '218007',
-      [
-        new ProgressData('装配', 0.90),
-        new ProgressData('测试', 0.78),
-        new ProgressData('质检', 0.65),
-      ],
-      false),
-  new OrderData(
-      '218008',
-      [
-        new ProgressData('装配', 0.90),
-      ],
-      false),
-  new OrderData(
-      '218009',
-      [
-        new ProgressData('装配', 1),
-      ],
-      false),
-  new OrderData(
-      '218010',
-      [
-        new ProgressData('装配', 0.1),
-        new ProgressData('测试', 0.95),
-      ],
-      false),
-];
-
-var rate = 67;
-var rate2 = 91;
-
-var order_arr = [orders, orders2];
-var rate_arr = [rate, rate2];
-
 void mockConfig() {
-  when(client.get('localhost:8080/progress/2017-10-1')).thenAnswer((_) async =>
-      http.Response(
-          '{"orders": [{"id": "418575","delay": false}, {"id": "418477", "delay": true}], "crafts": [{"id": "418575", "name": "Assemble", "percent": 0.6}, {"id": "418477", "name": "Assemble", "percent": 0.23}, {"id": "418477", "name": "Test", "percent": 0.18}], "rate": 67}',
-          200));
+  String response_2017_10_01 =
+      '{"orders":[{"id":"418575","delay":false},{"id":"418477","delay":true},{"id":"418480","delay":false},{"id":"418520","delay":false},{"id":"418555","delay":false},{"id":"418577","delay":false}],"crafts":[{"id":"418575","name":"Assemble","percent":0.6},{"id":"418477","name":"Assemble","percent":0.23},{"id":"418477","name":"Test","percent":0.18},{"id":"418480","name":"Assemble","percent":0.98},{"id":"418480","name":"Combine","percent":0.68},{"id":"418480","name":"Test","percent":0.08},{"id":"418520","name":"Assemble","percent":0.63},{"id":"418555","name":"Assemble","percent":0.25},{"id":"418555","name":"Test","percent":0},{"id":"418577","name":"Assemble","percent":0.78}],"rate":83}';
+  String response_2017_10_02 =
+      '{"orders":[{"id":"418575","delay":false},{"id":"418477","delay":true},{"id":"418480","delay":false},{"id":"418520","delay":false},{"id":"418555","delay":false},{"id":"418577","delay":false},{"id":"518034","delay":false},{"id":"523002","delay":false},{"id":"523864","delay":false}],"crafts":[{"id":"418575","name":"Assemble","percent":1},{"id":"418477","name":"Assemble","percent":0.83},{"id":"418477","name":"Test","percent":0.78},{"id":"418480","name":"Assemble","percent":1},{"id":"418480","name":"Combine","percent":1},{"id":"418480","name":"Test","percent":0.9},{"id":"418520","name":"Assemble","percent":1},{"id":"418555","name":"Assemble","percent":0.75},{"id":"418555","name":"Test","percent":0.7},{"id":"418577","name":"Assemble","percent":1},{"id":"518034","name":"Assemble","percent":0.55},{"id":"518034","name":"Test","percent":0.4},{"id":"523002","name":"Assemble","percent":0.43},{"id":"523864","name":"Assemble","percent":0.3},{"id":"523864","name":"Recheck","percent":0.1},{"id":"523864","name":"Transport","percent":0.06},{"id":"523864","name":"Test","percent":0}],"rate":88}';
+  when(client.get('localhost:8080/progress/2017-10-1'))
+      .thenAnswer((_) async => http.Response(response_2017_10_01, 200));
+  when(client.get('localhost:8080/progress/2017-10-2'))
+      .thenAnswer((_) async => http.Response(response_2017_10_02, 200));
 }
