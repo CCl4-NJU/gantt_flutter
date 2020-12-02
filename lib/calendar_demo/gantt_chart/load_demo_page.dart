@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:intl/intl.dart';
+import 'package:gantt_flutter/calendar_demo/http_data/load_data.dart';
+import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'models.dart';
@@ -15,26 +18,36 @@ var bar_colors = [
   Colors.red,
 ];
 
+class MockClient extends Mock implements http.Client {}
+
+final client = MockClient();
+
 class LoadDemoPage extends StatefulWidget {
   @override
   LoadDemoPageState createState() => LoadDemoPageState();
 }
 
 class LoadDemoPageState extends State<LoadDemoPage> {
-  var _data_rows = <RowData>[];
-  int _device_load = 0;
-  int _human_load = 0;
-  DateTime _from_date = DateTime(2017, 10, 1);
-  DateTime _to_date = DateTime(2017, 10, 7);
+  Future<LoadPageData> futureLoad;
 
-  int _mock_index = 0;
+  List<RowData> _data_rows;
+  int _device_load;
+  int _human_load;
+  DateTime _from_date;
+  DateTime _to_date;
 
   @override
   void initState() {
     super.initState();
-    /** 以下是硬编码假数据 */
-    getLoadData();
-    /** 硬编码假数据结束 */
+
+    _data_rows = <RowData>[];
+    _device_load = 0;
+    _human_load = 0;
+    _from_date = DateTime(2017, 10, 1);
+    _to_date = DateTime(2017, 10, 7);
+
+    mockLoadConfig();
+    futureLoad = fetchLoadData(client, _from_date, _to_date);
   }
 
   @override
@@ -44,7 +57,31 @@ class LoadDemoPageState extends State<LoadDemoPage> {
         title: Text('Load Chart'),
       ),
       body: Stack(
-        children: [_buildCharts(context)],
+        children: [
+          FutureBuilder<LoadPageData>(
+            future: futureLoad,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                _data_rows.clear();
+                _data_rows.addAll(snapshot.data.rows
+                    .map((item) => RowData(
+                        item.date,
+                        item.loads
+                            .map((load) => BarLoad(load.resource, load.percent))
+                            .toList()))
+                    .toList());
+
+                _human_load = snapshot.data.human;
+                _device_load = snapshot.data.device;
+
+                return _buildCharts(context);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return CircularProgressIndicator();
+            },
+          )
+        ],
       ),
     );
   }
@@ -72,16 +109,9 @@ class LoadDemoPageState extends State<LoadDemoPage> {
         _from_date = picked.start;
         _to_date = picked.end;
 
-        _mock_index = 1 - _mock_index;
-
         _data_rows.clear();
-        _data_rows.addAll(rows_arr[_mock_index]);
-        _device_load = load_arr[_mock_index][0];
-        _human_load = load_arr[_mock_index][1];
+        futureLoad = fetchLoadData(client, _from_date, _to_date);
       });
-      //TODO: Change chart data
-
-      print(picked);
     }
 
     List<Widget> listViews = <Widget>[];
@@ -152,12 +182,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
       },
     );
   }
-
-  getLoadData() {
-    _data_rows.addAll(rows);
-    _device_load = loadSums[0];
-    _human_load = loadSums[1];
-  }
 }
 
 Widget getBar(List<BarLoad> dataBar, String date) {
@@ -186,110 +210,13 @@ Widget getBar(List<BarLoad> dataBar, String date) {
   );
 }
 
-var rows = [
-  new RowData('2017-10-01', [
-    new BarLoad('Line 1', 23),
-    new BarLoad('Line 2', 78),
-    new BarLoad('张三', 23),
-    new BarLoad('李四', 76),
-    new BarLoad('张扬', 23),
-    new BarLoad('李彤', 76),
-  ]),
-  new RowData('2017-10-02', [
-    new BarLoad('Line 1', 50),
-    new BarLoad('Line 2', 113),
-    new BarLoad('张三', 50),
-    new BarLoad('李四', 99),
-    new BarLoad('张扬', 50),
-    new BarLoad('李彤', 99),
-  ]),
-  new RowData('2017-10-03', [
-    new BarLoad('Line 1', 68),
-    new BarLoad('Line 2', 23),
-    new BarLoad('张三', 58),
-    new BarLoad('李四', 50),
-    new BarLoad('张扬', 58),
-    new BarLoad('李彤', 50),
-  ]),
-  new RowData('2017-10-04', [
-    new BarLoad('Line 1', 99),
-    new BarLoad('Line 2', 58),
-    new BarLoad('张三', 50),
-    new BarLoad('李四', 99),
-    new BarLoad('张扬', 50),
-    new BarLoad('李彤', 99),
-  ]),
-  new RowData('2017-10-05', [
-    new BarLoad('Line 1', 50),
-    new BarLoad('Line 2', 113),
-    new BarLoad('张三', 50),
-    new BarLoad('李四', 99),
-    new BarLoad('张扬', 50),
-    new BarLoad('李彤', 99),
-  ]),
-  new RowData('2017-10-06', [
-    new BarLoad('Line 1', 80),
-    new BarLoad('Line 2', 93),
-  ]),
-  new RowData('2017-10-07', [
-    new BarLoad('Line 1', 70),
-    new BarLoad('Line 2', 83),
-  ]),
-];
-
-var rows2 = [
-  new RowData('2017-10-08', [
-    new BarLoad('Line 11', 13),
-    new BarLoad('Line 22', 28),
-    new BarLoad('唐僧', 43),
-    new BarLoad('悟空', 66),
-    new BarLoad('八戒', 83),
-    new BarLoad('沙僧', 100),
-  ]),
-  new RowData('2017-10-09', [
-    new BarLoad('Line 11', 100),
-    new BarLoad('Line 22', 86),
-    new BarLoad('唐僧', 61),
-    new BarLoad('悟空', 58),
-    new BarLoad('八戒', 47),
-    new BarLoad('沙僧', 30),
-  ]),
-  new RowData('2017-10-10', [
-    new BarLoad('Line 11', 68),
-    new BarLoad('Line 22', 23),
-    new BarLoad('唐僧', 58),
-    new BarLoad('悟空', 50),
-    new BarLoad('八戒', 58),
-    new BarLoad('沙僧', 50),
-  ]),
-  new RowData('2017-10-11', [
-    new BarLoad('Line 11', 99),
-    new BarLoad('Line 22', 58),
-    new BarLoad('唐僧', 50),
-    new BarLoad('悟空', 99),
-    new BarLoad('八戒', 50),
-    new BarLoad('沙僧', 99),
-  ]),
-  new RowData('2017-10-12', [
-    new BarLoad('Line 11', 50),
-    new BarLoad('Line 22', 73),
-    new BarLoad('唐僧', 50),
-    new BarLoad('悟空', 99),
-    new BarLoad('八戒', 50),
-    new BarLoad('沙僧', 99),
-  ]),
-  new RowData('2017-10-13', [
-    new BarLoad('Line 11', 80),
-    new BarLoad('Line 22', 93),
-  ]),
-  new RowData('2017-10-14', [
-    new BarLoad('Line 11', 70),
-    new BarLoad('Line 22', 83),
-  ]),
-];
-
-var loadSums = [75, 66];
-var loadSums2 = [81, 48];
-
-var rows_arr = [rows, rows2];
-var load_arr = [loadSums, loadSums2];
+void mockLoadConfig() {
+  String response_2017_10_01 =
+      '{"rows":[{"id":"1","date":"2017-10-01"},{"id":"2","date":"2017-10-02"},{"id":"3","date":"2017-10-03"},{"id":"4","date":"2017-10-04"},{"id":"5","date":"2017-10-05"},{"id":"6","date":"2017-10-06"},{"id":"7","date":"2017-10-07"}],"loads":[{"id":"1","resource":"Line 1","percent":13},{"id":"1","resource":"Line 2","percent":28},{"id":"1","resource":"Tang Sanzang","percent":43},{"id":"1","resource":"Sun Wukong","percent":66},{"id":"1","resource":"Zhu Bagai","percent":83},{"id":"1","resource":"Sha Wujing","percent":100},{"id":"2","resource":"Line 1","percent":23},{"id":"2","resource":"Line 2","percent":38},{"id":"2","resource":"Tang Sanzang","percent":53},{"id":"2","resource":"Sun Wukong","percent":76},{"id":"2","resource":"Zhu Bagai","percent":93},{"id":"2","resource":"Sha Wujing","percent":90},{"id":"3","resource":"Line 1","percent":33},{"id":"3","resource":"Line 2","percent":48},{"id":"3","resource":"Tang Sanzang","percent":63},{"id":"3","resource":"Sun Wukong","percent":86},{"id":"3","resource":"Zhu Bagai","percent":83},{"id":"3","resource":"Sha Wujing","percent":80},{"id":"4","resource":"Line 1","percent":43},{"id":"4","resource":"Line 2","percent":58},{"id":"4","resource":"Tang Sanzang","percent":73},{"id":"4","resource":"Sun Wukong","percent":96},{"id":"4","resource":"Zhu Bagai","percent":73},{"id":"4","resource":"Sha Wujing","percent":70},{"id":"5","resource":"Line 1","percent":53},{"id":"5","resource":"Line 2","percent":68},{"id":"5","resource":"Tang Sanzang","percent":83},{"id":"5","resource":"Sun Wukong","percent":86},{"id":"5","resource":"Zhu Bagai","percent":63},{"id":"5","resource":"Sha Wujing","percent":60},{"id":"6","resource":"Line 1","percent":66},{"id":"6","resource":"Line 2","percent":69},{"id":"7","resource":"Line 1","percent":83},{"id":"7","resource":"Line 2","percent":78}],"human":75,"device":86}';
+  String response_2017_10_08 =
+      '{"rows":[{"id":"1","date":"2017-10-08"},{"id":"2","date":"2017-10-09"},{"id":"3","date":"2017-10-10"},{"id":"4","date":"2017-10-11"},{"id":"5","date":"2017-10-12"},{"id":"6","date":"2017-10-13"},{"id":"7","date":"2017-10-14"}],"loads":[{"id":"1","resource":"Line 1","percent":87},{"id":"1","resource":"Line 2","percent":72},{"id":"1","resource":"Tang Sanzang","percent":57},{"id":"1","resource":"Sun Wukong","percent":34},{"id":"1","resource":"Zhu Bagai","percent":17},{"id":"1","resource":"Sha Wujing","percent":0},{"id":"2","resource":"Line 1","percent":77},{"id":"2","resource":"Line 2","percent":62},{"id":"2","resource":"Tang Sanzang","percent":47},{"id":"2","resource":"Sun Wukong","percent":24},{"id":"2","resource":"Zhu Bagai","percent":7},{"id":"2","resource":"Sha Wujing","percent":10},{"id":"3","resource":"Line 1","percent":67},{"id":"3","resource":"Line 2","percent":52},{"id":"3","resource":"Tang Sanzang","percent":37},{"id":"3","resource":"Sun Wukong","percent":14},{"id":"3","resource":"Zhu Bagai","percent":17},{"id":"3","resource":"Sha Wujing","percent":20},{"id":"4","resource":"Line 1","percent":57},{"id":"4","resource":"Line 2","percent":42},{"id":"4","resource":"Tang Sanzang","percent":27},{"id":"4","resource":"Sun Wukong","percent":4},{"id":"4","resource":"Zhu Bagai","percent":27},{"id":"4","resource":"Sha Wujing","percent":30},{"id":"5","resource":"Line 1","percent":47},{"id":"5","resource":"Line 2","percent":32},{"id":"5","resource":"Tang Sanzang","percent":17},{"id":"5","resource":"Sun Wukong","percent":14},{"id":"5","resource":"Zhu Bagai","percent":37},{"id":"5","resource":"Sha Wujing","percent":40},{"id":"6","resource":"Line 1","percent":34},{"id":"6","resource":"Line 2","percent":31},{"id":"7","resource":"Line 1","percent":17},{"id":"7","resource":"Line 2","percent":22}],"human":35,"device":14}';
+  when(client.get('localhost:8080/load/2017-10-1/2017-10-7'))
+      .thenAnswer((_) async => http.Response(response_2017_10_01, 200));
+  when(client.get('localhost:8080/load/2017-10-8/2017-10-14'))
+      .thenAnswer((_) async => http.Response(response_2017_10_08, 200));
+}

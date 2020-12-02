@@ -38,7 +38,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
     _delivery_rate = 0;
     _data_items = <OrderData>[];
 
-    mockConfig();
+    mockProgressConfig();
     futureProgress = fetchProgressData(client, _selected_date);
   }
 
@@ -176,7 +176,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   }
 }
 
-void mockConfig() {
+void mockProgressConfig() {
   String response_2017_10_01 =
       '{"orders":[{"id":"418575","delay":false},{"id":"418477","delay":true},{"id":"418480","delay":false},{"id":"418520","delay":false},{"id":"418555","delay":false},{"id":"418577","delay":false}],"crafts":[{"id":"418575","name":"Assemble","percent":0.6},{"id":"418477","name":"Assemble","percent":0.23},{"id":"418477","name":"Test","percent":0.18},{"id":"418480","name":"Assemble","percent":0.98},{"id":"418480","name":"Combine","percent":0.68},{"id":"418480","name":"Test","percent":0.08},{"id":"418520","name":"Assemble","percent":0.63},{"id":"418555","name":"Assemble","percent":0.25},{"id":"418555","name":"Test","percent":0},{"id":"418577","name":"Assemble","percent":0.78}],"rate":83}';
   String response_2017_10_02 =
