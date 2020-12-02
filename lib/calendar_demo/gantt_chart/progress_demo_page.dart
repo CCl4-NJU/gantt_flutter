@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'models.dart';
 import 'package:intl/intl.dart';
+import 'package:gantt_flutter/calendar_demo/http_data/progress_data.dart';
+import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 var progress_colors = [
@@ -11,12 +14,18 @@ var progress_colors = [
   Colors.purple,
 ];
 
+class MockClient extends Mock implements http.Client {}
+
+final client = MockClient();
+
 class ProgressDemoPage extends StatefulWidget {
   @override
   ProgressDemoPageState createState() => ProgressDemoPageState();
 }
 
 class ProgressDemoPageState extends State<ProgressDemoPage> {
+  Future<ProgressPageData> futureProgress;
+
   var _data_items = <OrderData>[];
   var _delivery_rate = 0;
   DateTime _selected_date = DateTime(2017, 10, 1);
@@ -27,7 +36,15 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   void initState() {
     super.initState();
     /** 以下是硬编码假数据 */
-    getProgressData();
+    // getProgressData();
+    mockConfig();
+    String date_url = _selected_date.year.toString() +
+        '-' +
+        _selected_date.month.toString() +
+        '-' +
+        _selected_date.day.toString();
+    futureProgress = fetchProgressData(client, date_url);
+    // print('get success');
     /** 硬编码假数据结束 */
   }
 
@@ -37,8 +54,32 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       appBar: AppBar(
         title: Text('Order Progress'),
       ),
+      // body: Center(
+      //   child: _buildCharts(context),
+      // ),
       body: Center(
-        child: _buildCharts(context),
+        child: FutureBuilder<ProgressPageData>(
+          future: futureProgress,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              _data_items.addAll(snapshot.data.orders
+                  .map((item) => OrderData(
+                      item.id,
+                      item.crafts
+                          .map((craft) =>
+                              ProgressData(craft.name, craft.percent))
+                          .toList(),
+                      item.delay))
+                  .toList());
+
+              _delivery_rate = snapshot.data.rate;
+              return _buildCharts(context);
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+            return CircularProgressIndicator();
+          },
+        ),
       ),
     );
   }
@@ -119,8 +160,10 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
     int len = data.crafts.length;
     for (int i = 0; i < len; i++) {
       double percent = data.crafts[i].percent;
-      String center_str =
-          data.crafts[i].name + (data.crafts[i].percent * 100).toString() + '%';
+      String center_str = data.crafts[i].name +
+          ': ' +
+          (data.crafts[i].percent * 100).toString() +
+          '%';
       progress_items.add(new LinearPercentIndicator(
         width: (MediaQuery.of(context).size.width - 200) / len,
         lineHeight: 20.0,
@@ -282,3 +325,10 @@ var rate2 = 91;
 
 var order_arr = [orders, orders2];
 var rate_arr = [rate, rate2];
+
+void mockConfig() {
+  when(client.get('localhost:8080/progress/2017-10-1')).thenAnswer((_) async =>
+      http.Response(
+          '{"orders": [{"id": "418575","delay": false}, {"id": "418477", "delay": true}], "crafts": [{"id": "418575", "name": "Assemble", "percent": 0.6}, {"id": "418477", "name": "Assemble", "percent": 0.23}, {"id": "418477", "name": "Test", "percent": 0.18}], "rate": 67}',
+          200));
+}
