@@ -18,18 +18,18 @@
 
 /** 甘特图数据模型 */
 class Product {
-  int id;
+  String id;
   String name;
 
   Product({this.id, this.name});
 }
 
 class Resource {
-  int id;
+  String id;
   String name;
   DateTime startTime;
   DateTime endTime;
-  List<int> productions;
+  List<String> productions;
 
   Resource(
       {this.id, this.name, this.startTime, this.endTime, this.productions});

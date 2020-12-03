@@ -406,108 +406,108 @@ class ProductGantt extends StatelessWidget {
 
 /** 产品3数据 */
 var users = [
-  Product(id: 3, name: '产品3'),
+  Product(id: "3", name: '产品3'),
 ];
 
 var projects = [
   Resource(
-      id: 1,
+      id: "1",
       name: 'Line 1',
       startTime: DateTime(2018, 1, 1, 18, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 2,
+      id: "2",
       name: 'Line 4',
       startTime: DateTime(2018, 1, 1, 9, 0),
       endTime: DateTime(2018, 1, 1, 11, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 3,
+      id: "3",
       name: '小明',
       startTime: DateTime(2018, 1, 1, 9, 0),
       endTime: DateTime(2018, 1, 1, 11, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 4,
+      id: "4",
       name: '小明',
       startTime: DateTime(2018, 1, 1, 18, 0),
       endTime: DateTime(2018, 1, 1, 19, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 5,
+      id: "5",
       name: '张三',
       startTime: DateTime(2018, 1, 1, 19, 0),
       endTime: DateTime(2018, 1, 1, 21, 0),
-      productions: [3]),
+      productions: ["3"]),
 ];
 
 var projects2 = [
   Resource(
-      id: 1,
+      id: "1",
       name: 'Line 2',
       startTime: DateTime(2018, 1, 2, 12, 0),
       endTime: DateTime(2018, 1, 2, 15, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 2,
+      id: "2",
       name: 'Line 4',
       startTime: DateTime(2018, 1, 2, 3, 0),
       endTime: DateTime(2018, 1, 2, 5, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 3,
+      id: "3",
       name: '小胖',
       startTime: DateTime(2018, 1, 2, 3, 0),
       endTime: DateTime(2018, 1, 2, 5, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 4,
+      id: "4",
       name: '小胖',
       startTime: DateTime(2018, 1, 2, 12, 0),
       endTime: DateTime(2018, 1, 2, 13, 0),
-      productions: [3]),
+      productions: ["3"]),
   Resource(
-      id: 5,
+      id: "5",
       name: '三仔',
       startTime: DateTime(2018, 1, 2, 13, 0),
       endTime: DateTime(2018, 1, 2, 15, 0),
-      productions: [3]),
+      productions: ["3"]),
 ];
 
 /** 产品4数据 */
 var users2 = [
-  Product(id: 4, name: '产品4'),
+  Product(id: "4", name: '产品4'),
 ];
 
 var projects21 = [
   Resource(
-      id: 1,
+      id: "1",
       name: 'Line 1',
       startTime: DateTime(2018, 1, 1, 21, 0),
       endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: [4]),
+      productions: ["4"]),
   Resource(
-      id: 2,
+      id: "2",
       name: '张三',
       startTime: DateTime(2018, 1, 1, 21, 0),
       endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: [4]),
+      productions: ["4"]),
 ];
 
 var projects22 = [
   Resource(
-      id: 1,
+      id: "1",
       name: 'Line 1',
       startTime: DateTime(2018, 1, 2, 15, 0),
       endTime: DateTime(2018, 1, 2, 17, 0),
-      productions: [4]),
+      productions: ["4"]),
   Resource(
-      id: 2,
+      id: "2",
       name: '张三',
       startTime: DateTime(2018, 1, 2, 15, 0),
       endTime: DateTime(2018, 1, 2, 17, 0),
-      productions: [4]),
+      productions: ["4"]),
 ];
 
 var proj_arr = [projects, projects2];
