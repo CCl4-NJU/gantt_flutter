@@ -71,7 +71,8 @@ Future<GanttPageData> fetchResourceData(
       date.month.toString() +
       '-' +
       date.day.toString();
-  final response = await client.get('localhost:8080/test/resource');
+  final response =
+      await client.get('localhost:8080/gantt/resource/' + date_url);
   // print(date);
   if (response.statusCode == 200) {
     return GanttPageData.fromJson(jsonDecode(response.body));

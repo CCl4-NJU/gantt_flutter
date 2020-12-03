@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:date_utils/date_utils.dart';
 import 'product_gantt_page.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:gantt_flutter/calendar_demo/http_data/gantt_data.dart';
+import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
 import 'dart:math';
 
 import 'models.dart';
+
+class MockClient extends Mock implements http.Client {}
+
+final client = MockClient();
 
 class GranttChartScreen extends StatefulWidget {
   @override
@@ -18,14 +23,14 @@ class GranttChartScreenState extends State<GranttChartScreen>
   AnimationController animationController;
   Widget ganttWidget;
 
+  Future<GanttPageData> futureGantt;
+
   //设置时间
   DateTime fromDate;
   DateTime toDate;
 
-  List<Product> usersInChart;
-  List<Resource> projectsInChart;
-
-  int _mock_index = 0; //用于模拟动态数据
+  List<Product> productsInChart;
+  List<Resource> resourcesInChart;
 
   @override
   void initState() {
@@ -37,8 +42,11 @@ class GranttChartScreenState extends State<GranttChartScreen>
     fromDate = DateTime(2018, 1, 1);
     toDate = DateTime(2018, 1, 2);
 
-    projectsInChart = proj_arr[_mock_index];
-    usersInChart = user_arr[_mock_index];
+    productsInChart = new List<Product>();
+    resourcesInChart = new List<Resource>();
+
+    mockResourceGanttConfig();
+    futureGantt = fetchResourceData(client, fromDate);
 
     ganttWidget = buildGantt();
   }
@@ -50,14 +58,39 @@ class GranttChartScreenState extends State<GranttChartScreen>
   }
 
   Widget buildGantt() {
-    return new Expanded(
-      child: GanttChart(
-        animationController: animationController,
-        fromDate: fromDate,
-        toDate: toDate,
-        data: projectsInChart,
-        usersInChart: usersInChart,
-      ),
+    return FutureBuilder<GanttPageData>(
+      future: futureGantt,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          productsInChart.clear();
+          productsInChart.addAll(snapshot.data.products
+              .map((p) => Product(id: p.id, name: p.name))
+              .toList());
+
+          resourcesInChart.clear();
+          resourcesInChart.addAll(snapshot.data.resources
+              .map((r) => Resource(
+                  id: r.id,
+                  name: r.name,
+                  startTime: r.startTime,
+                  endTime: r.endTime,
+                  productions: r.productions))
+              .toList());
+
+          return Expanded(
+            child: GanttChart(
+              animationController: animationController,
+              fromDate: fromDate,
+              toDate: toDate,
+              data: resourcesInChart,
+              usersInChart: productsInChart,
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 
@@ -74,14 +107,10 @@ class GranttChartScreenState extends State<GranttChartScreen>
         fromDate = picked;
         toDate = fromDate.add(new Duration(days: 1));
 
-        _mock_index = 1 - _mock_index;
-        usersInChart = user_arr[_mock_index];
-        projectsInChart = proj_arr[_mock_index];
+        futureGantt = fetchResourceData(client, picked);
 
         ganttWidget = buildGantt();
       });
-      print(picked);
-      //TODO: Change gantt data
     }
 
     return Scaffold(
@@ -397,166 +426,15 @@ class GanttChart extends StatelessWidget {
   }
 }
 
-var users = [
-  Product(id: "1", name: '产品1'),
-  Product(id: "2", name: '产品2'),
-  Product(id: "3", name: '产品3'),
-  Product(id: "4", name: '产品4'),
-  Product(id: "5", name: '产品5'),
-];
-
-var users2 = [
-  Product(id: "1", name: '产品1'),
-  Product(id: "2", name: '产品2'),
-  Product(id: "3", name: '产品3'),
-  Product(id: "4", name: '产品4'),
-];
-
 //productions：一条生产线同一时段可以同时生产多个产品，只是示例刚好没有这种情况
 //两个问题：1. 不能跨天显示 2. 时间必须为整点，否则会向下取整
-var projects = [
-  Resource(
-      id: "1",
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 7, 0),
-      endTime: DateTime(2018, 1, 1, 9, 0),
-      productions: ["1"]),
-  Resource(
-      id: "2",
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 17, 0),
-      productions: ["2"]),
-  Resource(
-      id: "3",
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 18, 0),
-      endTime: DateTime(2018, 1, 1, 21, 0),
-      productions: ["3"]),
-  Resource(
-      id: "4",
-      name: 'Line 1',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: ["4"]),
-  Resource(
-      id: "5",
-      name: 'Line 4',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 11, 0),
-      productions: ["3"]),
-  Resource(
-      id: "6",
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 7, 0),
-      endTime: DateTime(2018, 1, 1, 9, 0),
-      productions: ["1"]),
-  Resource(
-      id: "7",
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 17, 0),
-      productions: ["2"]),
-  Resource(
-      id: "8",
-      name: '李四',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: ["5"]),
-  Resource(
-      id: "9",
-      name: '小明',
-      startTime: DateTime(2018, 1, 1, 9, 0),
-      endTime: DateTime(2018, 1, 1, 11, 0),
-      productions: ["3"]),
-  Resource(
-      id: "10",
-      name: '小明',
-      startTime: DateTime(2018, 1, 1, 18, 0),
-      endTime: DateTime(2018, 1, 1, 19, 0),
-      productions: ["3"]),
-  Resource(
-      id: "11",
-      name: '张三',
-      startTime: DateTime(2018, 1, 1, 19, 0),
-      endTime: DateTime(2018, 1, 1, 21, 0),
-      productions: ["3"]),
-  Resource(
-      id: "12",
-      name: '张三',
-      startTime: DateTime(2018, 1, 1, 21, 0),
-      endTime: DateTime(2018, 1, 1, 23, 0),
-      productions: ["4"]),
-];
-
-var projects2 = [
-  Resource(
-      id: "1",
-      name: 'Line 2',
-      startTime: DateTime(2018, 1, 2, 1, 0),
-      endTime: DateTime(2018, 1, 2, 3, 0),
-      productions: ["1"]),
-  Resource(
-      id: "2",
-      name: 'Line 2',
-      startTime: DateTime(2018, 1, 2, 3, 0),
-      endTime: DateTime(2018, 1, 2, 11, 0),
-      productions: ["2"]),
-  Resource(
-      id: "3",
-      name: 'Line 2',
-      startTime: DateTime(2018, 1, 2, 12, 0),
-      endTime: DateTime(2018, 1, 2, 15, 0),
-      productions: ["3"]),
-  Resource(
-      id: "4",
-      name: 'Line 2',
-      startTime: DateTime(2018, 1, 2, 15, 0),
-      endTime: DateTime(2018, 1, 2, 17, 0),
-      productions: ["4"]),
-  Resource(
-      id: "5",
-      name: 'Line 4',
-      startTime: DateTime(2018, 1, 2, 3, 0),
-      endTime: DateTime(2018, 1, 2, 5, 0),
-      productions: ["3"]),
-  Resource(
-      id: "6",
-      name: '李四',
-      startTime: DateTime(2018, 1, 2, 1, 0),
-      endTime: DateTime(2018, 1, 2, 3, 0),
-      productions: ["1"]),
-  Resource(
-      id: "7",
-      name: '李四',
-      startTime: DateTime(2018, 1, 2, 3, 0),
-      endTime: DateTime(2018, 1, 2, 11, 0),
-      productions: ["2"]),
-  Resource(
-      id: "8",
-      name: '小明',
-      startTime: DateTime(2018, 1, 2, 3, 0),
-      endTime: DateTime(2018, 1, 2, 5, 0),
-      productions: ["3"]),
-  Resource(
-      id: "9",
-      name: '小明',
-      startTime: DateTime(2018, 1, 2, 12, 0),
-      endTime: DateTime(2018, 1, 2, 13, 0),
-      productions: ["3"]),
-  Resource(
-      id: "10",
-      name: '张三',
-      startTime: DateTime(2018, 1, 2, 13, 0),
-      endTime: DateTime(2018, 1, 2, 15, 0),
-      productions: ["3"]),
-  Resource(
-      id: "11",
-      name: '张三',
-      startTime: DateTime(2018, 1, 2, 15, 0),
-      endTime: DateTime(2018, 1, 2, 17, 0),
-      productions: ["4"]),
-];
-
-var user_arr = [users, users2];
-var proj_arr = [projects, projects2];
+void mockResourceGanttConfig() {
+  String response_2018_1_1 =
+      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"2","name":"Line 1","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"3","name":"Li Si","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"4","name":"Li Si","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"}]}';
+  String response_2018_1_2 =
+      '{"products":[{"id":"3","name":"product 3"},{"id":"4","name":"product 4"}],"resources":[{"id":"1","name":"Line 5","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"3"},{"id":"2","name":"Line 2","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"4"},{"id":"3","name":"Zhang San","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"3"},{"id":"4","name":"Wang Wu","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"4"}]}';
+  when(client.get('localhost:8080/gantt/resource/2018-1-1'))
+      .thenAnswer((_) async => http.Response(response_2018_1_1, 200));
+  when(client.get('localhost:8080/gantt/resource/2018-1-2'))
+      .thenAnswer((_) async => http.Response(response_2018_1_2, 200));
+}
