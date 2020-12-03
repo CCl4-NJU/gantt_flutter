@@ -80,3 +80,19 @@ Future<GanttPageData> fetchResourceData(
     throw Exception('Failed to load ProgressPageData');
   }
 }
+
+Future<GanttPageData> fetchProductData(
+    http.Client client, DateTime date, String id) async {
+  String date_url = date.year.toString() +
+      '-' +
+      date.month.toString() +
+      '-' +
+      date.day.toString();
+  final response = await client.get('localhost:8080/test/product');
+  // print(date);
+  if (response.statusCode == 200) {
+    return GanttPageData.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load ProgressPageData');
+  }
+}

@@ -24,4 +24,20 @@ main() {
       // expect(await fetch, isA<GanttPageData>());
     });
   });
+  group('fetchProductData', () {
+    test('returns a GanttPageData if the http call completes successfully',
+        () async {
+      final client = MockClient();
+      // Use Mockito to return a successful response when it calls the
+      // provided http.Client.
+      when(client.get('localhost:8080/test/product')).thenAnswer((_) async =>
+          http.Response(
+              '{"products":[{"id":"3","name":"product 3"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-18-0","endTime":"2018-1-1-21-0","productId":"3"},{"id":"2","name":"Line 2","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"3","name":"Zhang San","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"4","name":"Wang Wu","startTime":"2018-1-1-18-0","endTime":"2018-1-1-19-0","productId":"3"},{"id":"5","name":"Zhao Liu","startTime":"2018-1-1-19-0","endTime":"2018-1-1-21-0","productId":"3"}]}',
+              200));
+
+      var fetch = fetchProductData(client, DateTime.now(), "3");
+
+      expect(await fetch, isA<GanttPageData>());
+    });
+  });
 }
