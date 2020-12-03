@@ -430,7 +430,7 @@ class GanttChart extends StatelessWidget {
 //两个问题：1. 不能跨天显示 2. 时间必须为整点，否则会向下取整
 void mockResourceGanttConfig() {
   String response_2018_1_1 =
-      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"2","name":"Line 1","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"3","name":"Li Si","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"4","name":"Li Si","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"}]}';
+      '{"products":[{"id":"3","name":"product 3"},{"id":"4","name":"product 4"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"3"},{"id":"2","name":"Line 1","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"4"},{"id":"3","name":"Li Si","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"3"},{"id":"4","name":"Li Si","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"4"}]}';
   String response_2018_1_2 =
       '{"products":[{"id":"3","name":"product 3"},{"id":"4","name":"product 4"}],"resources":[{"id":"1","name":"Line 5","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"3"},{"id":"2","name":"Line 2","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"4"},{"id":"3","name":"Zhang San","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"3"},{"id":"4","name":"Wang Wu","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"4"}]}';
   when(client.get('localhost:8080/gantt/resource/2018-1-1'))

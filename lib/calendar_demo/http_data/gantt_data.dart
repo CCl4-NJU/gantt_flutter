@@ -88,7 +88,8 @@ Future<GanttPageData> fetchProductData(
       date.month.toString() +
       '-' +
       date.day.toString();
-  final response = await client.get('localhost:8080/test/product');
+  final response = await client
+      .get('localhost:8080/gantt/product/' + id.toString() + '/' + date_url);
   // print(date);
   if (response.statusCode == 200) {
     return GanttPageData.fromJson(jsonDecode(response.body));
