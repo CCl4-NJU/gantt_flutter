@@ -7,6 +7,25 @@ import 'dart:math';
 
 import 'models.dart';
 
+List<Color> gantt_colors = [
+  Colors.amber,
+  Colors.blue,
+  Colors.pink,
+  Colors.brown,
+  Colors.yellow,
+  Colors.cyan,
+  Colors.deepOrange,
+  Colors.deepPurple,
+  Colors.green,
+  Colors.lime,
+  Colors.indigo,
+  Colors.orange,
+  Colors.teal,
+];
+
+int color_num = 13;
+int color_cursor = 0;
+
 class MockClient extends Mock implements http.Client {}
 
 final client = MockClient();
@@ -109,6 +128,8 @@ class GranttChartScreenState extends State<GranttChartScreen>
 
         futureGantt = fetchResourceData(client, picked);
 
+        color_cursor = 0;
+
         ganttWidget = buildGantt();
       });
     }
@@ -164,8 +185,9 @@ class GanttChart extends StatelessWidget {
   }
 
   Color randomColorGenerator() {
-    var r = new Random();
-    return Color.fromRGBO(r.nextInt(256), r.nextInt(256), r.nextInt(256), 0.75);
+    // var r = new Random();
+    // return Color.fromRGBO(r.nextInt(256), r.nextInt(256), r.nextInt(256), 0.75);
+    return gantt_colors[color_cursor++ % color_num];
   }
 
   int calculateNumberOfMonthsBetween(DateTime from, DateTime to) {
@@ -332,6 +354,7 @@ class GanttChart extends StatelessWidget {
                 builder: (context) => ProductGanttPage(
                       product_id: user.id.toString(),
                       from_date: fromDate,
+                      gantt_color: color,
                     )),
           );
         },
@@ -430,9 +453,9 @@ class GanttChart extends StatelessWidget {
 //两个问题：1. 不能跨天显示 2. 时间必须为整点，否则会向下取整
 void mockResourceGanttConfig() {
   String response_2018_1_1 =
-      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"},{"id":"3","name":"product 3"},{"id":"4","name":"product 4"},{"id":"5","name":"product 5"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"2","name":"Line 1","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"3","name":"Line 1","startTime":"2018-1-1-18-0","endTime":"2018-1-1-21-0","productId":"3"},{"id":"4","name":"Line 1","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"4"},{"id":"5","name":"Line 4","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"6","name":"Li Si","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"7","name":"Li Si","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"8","name":"Li Si","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"5"},{"id":"9","name":"Xiao Ming","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"10","name":"Xiao Ming","startTime":"2018-1-1-18-0","endTime":"2018-1-1-19-0","productId":"3"},{"id":"11","name":"Zhang San","startTime":"2018-1-1-19-0","endTime":"2018-1-1-21-0","productId":"3"},{"id":"12","name":"Line 1","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"4"},{"id":"13","name":"Line 1","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"5"}]}';
+      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"},{"id":"3","name":"product 3"},{"id":"4","name":"product 4"},{"id":"5","name":"product 5"}],"resources":[{"id":"1","name":"Line 1","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"2","name":"Line 1","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"3","name":"Line 1","startTime":"2018-1-1-18-0","endTime":"2018-1-1-21-0","productId":"3"},{"id":"4","name":"Line 1","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"4"},{"id":"5","name":"Line 4","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"6","name":"Li Si","startTime":"2018-1-1-7-0","endTime":"2018-1-1-9-0","productId":"1"},{"id":"7","name":"Li Si","startTime":"2018-1-1-9-0","endTime":"2018-1-1-17-0","productId":"2"},{"id":"8","name":"Line 1","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"5"},{"id":"9","name":"Xiao Ming","startTime":"2018-1-1-9-0","endTime":"2018-1-1-11-0","productId":"3"},{"id":"10","name":"Xiao Ming","startTime":"2018-1-1-18-0","endTime":"2018-1-1-19-0","productId":"3"},{"id":"11","name":"Zhang San","startTime":"2018-1-1-19-0","endTime":"2018-1-1-21-0","productId":"3"},{"id":"12","name":"Zhang San","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"4"},{"id":"13","name":"Li Si","startTime":"2018-1-1-21-0","endTime":"2018-1-1-23-0","productId":"5"}]}';
   String response_2018_1_2 =
-      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"},{"id":"3","name":"product 3"},{"id":"4","name":"product 4"},{"id":"5","name":"product 5"}],"resources":[{"id":"1","name":"Line 2","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"1"},{"id":"2","name":"Line 2","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"2"},{"id":"3","name":"Line 2","startTime":"2018-1-2-18-0","endTime":"2018-1-2-21-0","productId":"3"},{"id":"4","name":"Line 2","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"4"},{"id":"5","name":"Line 3","startTime":"2018-1-2-9-0","endTime":"2018-1-2-11-0","productId":"3"},{"id":"6","name":"Zhao Liu","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"1"},{"id":"7","name":"Zhao Liu","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"2"},{"id":"8","name":"Zhao Liu","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"5"},{"id":"9","name":"Xiao Hong","startTime":"2018-1-2-9-0","endTime":"2018-1-2-11-0","productId":"3"},{"id":"10","name":"Xiao Hong","startTime":"2018-1-2-18-0","endTime":"2018-1-2-19-0","productId":"3"},{"id":"11","name":"Wang Wu","startTime":"2018-1-2-19-0","endTime":"2018-1-2-21-0","productId":"3"},{"id":"12","name":"Line 2","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"4"},{"id":"13","name":"Line 2","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"5"}]}';
+      '{"products":[{"id":"1","name":"product 1"},{"id":"2","name":"product 2"},{"id":"3","name":"product 3"},{"id":"4","name":"product 4"},{"id":"5","name":"product 5"}],"resources":[{"id":"1","name":"Line 2","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"1"},{"id":"2","name":"Line 2","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"2"},{"id":"3","name":"Line 2","startTime":"2018-1-2-18-0","endTime":"2018-1-2-21-0","productId":"3"},{"id":"4","name":"Line 2","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"4"},{"id":"5","name":"Line 3","startTime":"2018-1-2-9-0","endTime":"2018-1-2-11-0","productId":"3"},{"id":"6","name":"Zhao Liu","startTime":"2018-1-2-7-0","endTime":"2018-1-2-9-0","productId":"1"},{"id":"7","name":"Zhao Liu","startTime":"2018-1-2-9-0","endTime":"2018-1-2-17-0","productId":"2"},{"id":"8","name":"Line 2","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"5"},{"id":"9","name":"Xiao Hong","startTime":"2018-1-2-9-0","endTime":"2018-1-2-11-0","productId":"3"},{"id":"10","name":"Xiao Hong","startTime":"2018-1-2-18-0","endTime":"2018-1-2-19-0","productId":"3"},{"id":"11","name":"Wang Wu","startTime":"2018-1-2-19-0","endTime":"2018-1-2-21-0","productId":"3"},{"id":"12","name":"Wang Wu","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"4"},{"id":"13","name":"Zhao Liu","startTime":"2018-1-2-21-0","endTime":"2018-1-2-23-0","productId":"5"}]}';
   when(client.get('localhost:8080/gantt/resource/2018-1-1'))
       .thenAnswer((_) async => http.Response(response_2018_1_1, 200));
   when(client.get('localhost:8080/gantt/resource/2018-1-2'))
