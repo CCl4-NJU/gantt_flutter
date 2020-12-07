@@ -64,8 +64,33 @@ class ProductGranttScreenState extends State<ProductGanttPage>
   }
 
   Widget buildAppBar() {
+    datePicker() async {
+      DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: fromDate,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+      );
+      setState(() {
+        fromDate = picked;
+        toDate = fromDate.add(new Duration(days: 1));
+
+        futureGantt = fetchProductData(client, fromDate, widget.product_id);
+      });
+    }
+
     return AppBar(
-      title: Text('Product Gantt'),
+      title: Text('Resource Gantt'),
+      actions: [
+        RaisedButton(
+          color: Colors.blue,
+          textColor: Colors.white,
+          onPressed: () {
+            datePicker();
+          },
+          child: Text("View resource gantt in another date..."),
+        )
+      ],
     );
   }
 
@@ -108,41 +133,12 @@ class ProductGranttScreenState extends State<ProductGanttPage>
 
   @override
   Widget build(BuildContext context) {
-    datePicker() async {
-      DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: fromDate,
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5),
-      );
-      setState(() {
-        fromDate = picked;
-        toDate = fromDate.add(new Duration(days: 1));
-
-        futureGantt = fetchProductData(client, fromDate, widget.product_id);
-      });
-    }
-
     return Scaffold(
       appBar: buildAppBar(),
       body: GestureDetector(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Center(
-              child: Column(
-                children: [
-                  RaisedButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    onPressed: () {
-                      datePicker();
-                    },
-                    child: Text("View product gantt in another date..."),
-                  ),
-                ],
-              ),
-            ),
             buildGantt(),
           ],
         ),
