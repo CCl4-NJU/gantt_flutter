@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:intl/intl.dart';
-import 'package:gantt_flutter/calendar_demo/http_data/load_data.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:gantt_flutter/calendar_demo/http_data/load_data.dart';
+import 'using_card_view.dart';
 import 'package:gantt_flutter/models.dart';
 
 var bar_colors = [
@@ -88,11 +89,21 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   Widget _buildRow(RowData data) {
     return new Container(
       height: 300,
-      child: getBar(data.data, data.date),
+      child: getBar(data.data),
     );
   }
 
-  Widget _buildCharts(BuildContext context) {
+  Widget _buildHeader() {
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          _buildCard(),
+        ],
+      ),
+    );
+  }
+
+  _buildCard() {
     dateTimeRangePicker() async {
       DateTimeRange picked = await showDateRangePicker(
         context: context,
@@ -113,6 +124,50 @@ class LoadDemoPageState extends State<LoadDemoPage> {
       });
     }
 
+    return Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 48.0),
+          child: Container(
+            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.width / 1.5,
+            decoration: BoxDecoration(),
+            child: Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.album),
+                    title: Text('Resource Load Summary'),
+                    subtitle: Text(
+                      DateFormat('yyyy-MM-dd').format(_from_date) +
+                          ' to ' +
+                          DateFormat('yyyy-MM-dd').format(_to_date),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14.0),
+                    ),
+                  ),
+                  _buildSum(context),
+                  Center(
+                      child: Column(children: [
+                    Container(height: 20.0),
+                    RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        dateTimeRangePicker();
+                      },
+                      child: Text("View resource load in another duration..."),
+                    ),
+                  ])),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
+
+  Widget _buildSum(BuildContext context) {
     List<Widget> listViews = <Widget>[];
 
     //在此处添加设备占用率
@@ -149,41 +204,88 @@ class LoadDemoPageState extends State<LoadDemoPage> {
       children: load_sum_items,
     );
 
-    listViews.add(new Container(
-      padding: EdgeInsets.all(15.0),
-      child: content,
-    ));
+    return content;
+  }
 
-    listViews.add(new Center(
-        child: new Column(children: [
-      new Text(DateFormat('yyyy-MM-dd').format(_from_date) +
-          ' to ' +
-          DateFormat('yyyy-MM-dd').format(_to_date)),
-      RaisedButton(
-        color: Colors.blue,
-        textColor: Colors.white,
-        onPressed: () {
-          dateTimeRangePicker();
-        },
-        child: Text("View resource load in another duration..."),
-      ),
-    ])));
+  Widget _buildCharts(BuildContext context) {
+    dateTimeRangePicker() async {
+      DateTimeRange picked = await showDateRangePicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDateRange: DateTimeRange(
+          end: _to_date,
+          start: _from_date,
+        ),
+      );
 
-    for (int i = 0; i < _data_rows.length; i++) {
-      listViews.add(_buildRow(_data_rows[i]));
+      setState(() {
+        _from_date = picked.start;
+        _to_date = picked.end;
+
+        _data_rows.clear();
+        futureLoad = fetchLoadData(client, _from_date, _to_date);
+      });
     }
 
-    return new ListView.builder(
-      padding: const EdgeInsets.all(30.0),
-      itemCount: listViews.length,
-      itemBuilder: (context, i) {
-        return listViews[i];
-      },
+    return UsingCardView(
+      card: ConstrainedBox(
+        constraints: BoxConstraints.expand(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.5),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: _buildHeader(),
+        ),
+      ),
+      view: Center(
+        child: ListView.builder(
+          padding: EdgeInsets.all(16.0),
+          itemCount: _data_rows.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(color: Colors.black12, blurRadius: 8.0)
+                    ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      _data_rows[index].date,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Container(
+                      height: 1.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Colors.blueGrey, Colors.transparent])),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                      child: _buildRow(_data_rows[index]),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
 
-Widget getBar(List<BarLoad> dataBar, String date) {
+Widget getBar(List<BarLoad> dataBar) {
   var seriesBar = [
     charts.Series(
       data: dataBar,
@@ -200,7 +302,7 @@ Widget getBar(List<BarLoad> dataBar, String date) {
     seriesBar,
     animate: true,
     behaviors: [
-      new charts.ChartTitle(date,
+      new charts.ChartTitle('          ',
           behaviorPosition: charts.BehaviorPosition.bottom,
           titleOutsideJustification:
               charts.OutsideJustification.middleDrawArea),
