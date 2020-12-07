@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 
-import 'models.dart';
+import 'package:gantt_flutter/models.dart';
 
 class MockClient extends Mock implements http.Client {}
 

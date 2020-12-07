@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math';
 
-import 'models.dart';
+import 'package:gantt_flutter/models.dart';
 
 List<Color> gantt_colors = [
   Colors.amber,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'models.dart';
 import 'package:intl/intl.dart';
 import 'package:gantt_flutter/calendar_demo/http_data/progress_data.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+import 'package:gantt_flutter/models.dart';
 
 var progress_colors = [
   Colors.lightBlue,

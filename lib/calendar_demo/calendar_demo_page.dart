@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'gantt_chart/gantt_chart_screen.dart';
-import 'gantt_chart/load_demo_page.dart';
-import 'gantt_chart/progress_demo_page.dart';
-
-//定义假数据，向子组件传参
+import 'package:gantt_flutter/calendar_demo/gantt_chart/gantt_chart_screen.dart';
+import 'package:gantt_flutter/calendar_demo/load_chart/load_demo_page.dart';
+import 'package:gantt_flutter/calendar_demo/progress_chart/progress_demo_page.dart';
 
 class CalendarDemoPage extends StatelessWidget {
   @override

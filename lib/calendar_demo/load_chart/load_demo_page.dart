@@ -5,9 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:gantt_flutter/calendar_demo/http_data/load_data.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
-import 'models.dart';
+import 'package:gantt_flutter/models.dart';
 
 var bar_colors = [
   Colors.lightBlue,
