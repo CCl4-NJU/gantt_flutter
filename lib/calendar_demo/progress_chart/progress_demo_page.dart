@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:intl/intl.dart';
-import 'package:gantt_flutter/calendar_demo/http_data/progress_data.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:gantt_flutter/calendar_demo/http_data/progress_data.dart';
 import 'package:gantt_flutter/models.dart';
 import 'using_card_view.dart';
 

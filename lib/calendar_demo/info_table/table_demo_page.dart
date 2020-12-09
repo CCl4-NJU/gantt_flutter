@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:gantt_flutter/calendar_demo/info_table/quick_switch_model.dart';
 import 'package:gantt_flutter/calendar_demo/info_table/quick_switch_view.dart';
+import 'package:gantt_flutter/calendar_demo/http_data/table_data.dart';
 import 'package:gantt_flutter/models.dart';
 
 class MockClient extends Mock implements http.Client {}
@@ -18,23 +19,20 @@ class TableDemoPage extends StatefulWidget {
 }
 
 class _TableDemoPageState extends State<TableDemoPage> {
+  Future<ResourceTablePageData> futureResourceTable;
+
   List<ResourceData> _human_resources;
   List<ResourceData> _device_resources;
 
   @override
   void initState() {
+    super.initState();
+
     _human_resources = new List<ResourceData>();
     _device_resources = new List<ResourceData>();
 
-    _human_resources.addAll([
-      ResourceData('1', 'Tong Xiaoling', '5', 'day'),
-      ResourceData('2', 'Wang Xiaohu', '4', 'night'),
-    ]);
-
-    _device_resources.addAll([
-      ResourceData('1', 'Line 1', '2', 'day & night'),
-      ResourceData('2', 'Line 4', '3', 'day & night'),
-    ]);
+    mockResourceTableConfig();
+    futureResourceTable = fetchResourceTableData(client);
   }
 
   @override
@@ -45,9 +43,43 @@ class _TableDemoPageState extends State<TableDemoPage> {
           backgroundColor: Theme.of(context).primaryColor),
       body: Container(
         alignment: Alignment.center,
-        child: QuickSwitchView(
-          primary: QuickSwitchModel("Human", _buildTable(_human_resources)),
-          secondary: QuickSwitchModel("Device", _buildTable(_device_resources)),
+        child: FutureBuilder<ResourceTablePageData>(
+          future: futureResourceTable,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              _human_resources.clear();
+              _device_resources.clear();
+
+              _human_resources.addAll(snapshot.data.human
+                  .map((item) => ResourceData(
+                      item.id,
+                      item.name,
+                      item.number.toString(),
+                      item.shift == 1
+                          ? 'day & night'
+                          : (item.shift == 2 ? 'day' : 'night')))
+                  .toList());
+
+              _device_resources.addAll(snapshot.data.device
+                  .map((item) => ResourceData(
+                      item.id,
+                      item.name,
+                      item.number.toString(),
+                      item.shift == 1
+                          ? 'day & night'
+                          : (item.shift == 2 ? 'day' : 'night')))
+                  .toList());
+
+              return QuickSwitchView(
+                  primary:
+                      QuickSwitchModel("Human", _buildTable(_human_resources)),
+                  secondary: QuickSwitchModel(
+                      "Device", _buildTable(_device_resources)));
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+            return CircularProgressIndicator();
+          },
         ),
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -56,82 +88,6 @@ class _TableDemoPageState extends State<TableDemoPage> {
                 end: Alignment.bottomRight)),
       ),
     );
-  }
-
-  Widget _buildList() {
-    return Center(
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: 12,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 8.0)
-                  ]),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '#Item $index',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Container(
-                    height: 1.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.blueGrey, Colors.transparent])),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8.0, top: 8.0),
-                    child: Text(
-                      'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.',
-                      style: TextStyle(color: Colors.black87, fontSize: 11.0),
-                      maxLines: 3,
-                      textAlign: TextAlign.justify,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildHome() {
-    return ListView(children: <Widget>[
-      Center(
-        child: DataTable(
-          columns: [
-            DataColumn(
-                label: Text('Resource Name',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Resource Number',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-            DataColumn(
-                label: Text('Resource Drift',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-          ],
-          rows: [],
-        ),
-      )
-    ]);
   }
 
   Widget _buildTable(List<ResourceData> resource_list) {
@@ -156,4 +112,11 @@ class _TableDemoPageState extends State<TableDemoPage> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
     ], rows: data_row);
   }
+}
+
+void mockResourceTableConfig() {
+  String response_resource_info =
+      '{"human":[{"id":"1","name":"Tong Xiaoling","number":5,"shift":2},{"id":"2","name":"Wang Xiaohu","number":4,"shift":3},{"id":"3","name":"Zhang Xiaoming","number":10,"shift":3},{"id":"4","name":"Chen Xiaohong","number":7,"shift":2},{"id":"5","name":"Liu Xiaojia","number":3,"shift":3},{"id":"6","name":"Tong Xiaoling","number":5,"shift":2}],"device":[{"id":"1","name":"Line 1","number":4,"shift":1},{"id":"2","name":"Line 2","number":3,"shift":1},{"id":"3","name":"Line 3","number":4,"shift":1},{"id":"4","name":"Line 4","number":1,"shift":1}]}';
+  when(client.get('localhost:8080/resource/info'))
+      .thenAnswer((_) async => http.Response(response_resource_info, 200));
 }
