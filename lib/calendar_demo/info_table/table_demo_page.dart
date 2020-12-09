@@ -1,8 +1,14 @@
+import 'package:flutter/material.dart';
+import 'package:mockito/mockito.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:gantt_flutter/calendar_demo/info_table/quick_switch_model.dart';
 import 'package:gantt_flutter/calendar_demo/info_table/quick_switch_view.dart';
-import 'package:flutter/material.dart';
-
 import 'package:gantt_flutter/models.dart';
+
+class MockClient extends Mock implements http.Client {}
+
+final client = MockClient();
 
 class TableDemoPage extends StatefulWidget {
   @override
