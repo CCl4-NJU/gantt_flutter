@@ -11,14 +11,14 @@ class MockClient extends Mock implements http.Client {}
 
 final client = MockClient();
 
-class TableDemoPage extends StatefulWidget {
+class ResourceTableDemoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _TableDemoPageState();
+    return _ResourceTableDemoPageState();
   }
 }
 
-class _TableDemoPageState extends State<TableDemoPage> {
+class _ResourceTableDemoPageState extends State<ResourceTableDemoPage> {
   Future<ResourceTablePageData> futureResourceTable;
 
   List<ResourceData> _human_resources;

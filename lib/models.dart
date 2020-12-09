@@ -44,11 +44,30 @@ class BarLoad {
   BarLoad(this.resource, this.load_percent);
 }
 
-/** 资源图数据模型 */
+/** 资源表数据模型 */
 class ResourceData {
   String id;
   String name;
   String number;
   String shift; //2: day, 3: night, 1: all day
   ResourceData(this.id, this.name, this.number, this.shift);
+}
+
+/** 订单表数据模型 */
+//订单计划表数据
+class OrderScheduleData {
+  String id;
+  String sub_id;
+  String start;
+  String end;
+  OrderScheduleData(this.id, this.sub_id, this.start, this.end);
+}
+
+//订单资源占用表数据
+class OrderResourceData {
+  String id;
+  String sub_id;
+  String resource_count;
+  String time_count;
+  OrderResourceData(this.id, this.sub_id, this.resource_count, this.time_count);
 }
