@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gantt_flutter/calendar_demo/gantt_chart/gantt_chart_screen.dart';
 import 'package:gantt_flutter/calendar_demo/load_chart/load_demo_page.dart';
 import 'package:gantt_flutter/calendar_demo/progress_chart/progress_demo_page.dart';
+import 'package:gantt_flutter/calendar_demo/info_table/table_demo_page.dart';
 
 class CalendarDemoPage extends StatelessWidget {
   @override
@@ -25,6 +26,10 @@ class CalendarDemoPage extends StatelessWidget {
                 title: Text('Order Progress'),
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ProgressDemoPage()))),
+            ListTile(
+                title: Text('Resource Info'),
+                onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => TableDemoPage()))),
           ],
         ),
       ),

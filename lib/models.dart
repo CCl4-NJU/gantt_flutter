@@ -43,3 +43,12 @@ class BarLoad {
   int load_percent;
   BarLoad(this.resource, this.load_percent);
 }
+
+/** 资源图数据模型 */
+class ResourceData {
+  String id;
+  String name;
+  String number;
+  String shift; //2: day, 3: night, 1: all day
+  ResourceData(this.id, this.name, this.number, this.shift);
+}
