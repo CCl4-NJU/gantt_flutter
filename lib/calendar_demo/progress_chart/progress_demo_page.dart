@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:gantt_flutter/models.dart';
+import 'using_card_view.dart';
 
 var progress_colors = [
   Colors.lightBlue,
@@ -64,6 +65,9 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
                       item.delay))
                   .toList());
 
+              //添加一个空数据，因为有个小bug不知道如何解决
+              _data_items.add(OrderData('', new List<ProgressData>(), false));
+
               _delivery_rate = snapshot.data.rate;
               return _buildCharts(context);
             } else if (snapshot.hasError) {
@@ -77,6 +81,104 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   }
 
   Widget _buildCharts(BuildContext context) {
+    return UsingCardView(
+      card: ConstrainedBox(
+        constraints: BoxConstraints.expand(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.5),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: _buildHeader(),
+        ),
+      ),
+      view: Container(
+        child: ListView.builder(
+          padding: EdgeInsets.all(16.0),
+          itemCount: _data_items.length,
+          itemBuilder: (BuildContext context, int index) {
+            OrderData data = _data_items[index];
+            List<Widget> progress_items = [];
+            Widget content;
+            int len = data.crafts.length;
+            for (int i = 0; i < len; i++) {
+              double percent = data.crafts[i].percent;
+              String center_str = data.crafts[i].name +
+                  ': ' +
+                  (data.crafts[i].percent * 100).toString() +
+                  '%';
+              progress_items.add(new LinearPercentIndicator(
+                width: (MediaQuery.of(context).size.width - 200) / len,
+                lineHeight: 20.0,
+                animation: true,
+                animationDuration: 500,
+                percent: percent,
+                center: Text(center_str),
+                progressColor: data.delay
+                    ? Colors.red
+                    : (percent >= 1
+                        ? Colors.green
+                        : progress_colors[i % progress_colors.length]),
+                linearStrokeCap: LinearStrokeCap.roundAll,
+              ));
+            }
+            content = Row(
+              children: progress_items,
+            );
+
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(color: Colors.black12, blurRadius: 8.0)
+                    ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      index == _data_items.length - 1
+                          ? ''
+                          : 'Order No.' + data.id,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Container(
+                      height: 1.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [Colors.blueGrey, Colors.transparent])),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.0, top: 8.0),
+                      child: content,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          _buildCard(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCard() {
     datePicker() async {
       DateTime picked = await showDatePicker(
         context: context,
@@ -91,13 +193,55 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       });
     }
 
-    List<Widget> listViews = <Widget>[];
+    return Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height / 30),
+          child: Container(
+            height: MediaQuery.of(context).size.height / 2,
+            width: MediaQuery.of(context).size.width / 1.5,
+            decoration: BoxDecoration(),
+            child: Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.album),
+                    title: Text('Order On-time Delivery Rate'),
+                    subtitle: Text(
+                      'Before ' +
+                          DateFormat('yyyy-MM-dd').format(_selected_date),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 14.0),
+                    ),
+                  ),
+                  _buildSum(context),
+                  Center(
+                      child: Column(children: [
+                    Container(height: MediaQuery.of(context).size.height / 40),
+                    RaisedButton(
+                      color: Colors.blue,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        datePicker();
+                      },
+                      child: Text("View order progress in another date..."),
+                    ),
+                  ])),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
 
-    listViews.add(new CircularPercentIndicator(
+  Widget _buildSum(BuildContext context) {
+    return CircularPercentIndicator(
       radius: 130.0,
       animation: true,
       animationDuration: 1200,
-      lineWidth: 15.0,
+      lineWidth: (MediaQuery.of(context).size.width / 100),
       percent: _delivery_rate / 100,
       center: new Text(
         _delivery_rate.toString() + '%',
@@ -106,37 +250,6 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       progressColor: _delivery_rate < 20
           ? Colors.red
           : progress_colors[4 - (_delivery_rate ~/ 20)],
-      footer: new Text(
-        'On-time delivery rate：Till ' +
-            DateFormat('yyyy-MM-dd').format(_selected_date),
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
-      ),
-    ));
-
-    listViews.add(new Center(
-      child: new Column(
-        children: [
-          RaisedButton(
-            color: Colors.blue,
-            textColor: Colors.white,
-            onPressed: () {
-              datePicker();
-            },
-            child: Text("View order progress in another date..."),
-          ),
-        ],
-      ),
-    ));
-
-    for (int i = 0; i < _data_items.length; i++) {
-      listViews.add(_buildRow(_data_items[i]));
-    }
-
-    return new ListView.builder(
-      itemCount: listViews.length,
-      itemBuilder: (context, i) {
-        return listViews[i];
-      },
     );
   }
 
@@ -151,12 +264,11 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
           (data.crafts[i].percent * 100).toString() +
           '%';
       progress_items.add(new LinearPercentIndicator(
-        width: (MediaQuery.of(context).size.width - 200) / len,
+        width: (MediaQuery.of(context).size.width - 150) / len,
         lineHeight: 20.0,
         animation: true,
         animationDuration: 500,
         percent: percent,
-        leading: new Text(i == 0 ? ('Order ' + data.id + ': ') : ' '),
         center: Text(center_str),
         progressColor: data.delay
             ? Colors.red
