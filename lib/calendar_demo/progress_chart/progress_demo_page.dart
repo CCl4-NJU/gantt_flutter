@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:gantt_flutter/calendar_demo/http_data/progress_data.dart';
 import 'package:gantt_flutter/models.dart';
 import 'using_card_view.dart';
+import 'package:gantt_flutter/calendar_demo/responsive.dart';
 
 var progress_colors = [
   Colors.lightBlue,
@@ -26,6 +27,7 @@ class ProgressDemoPage extends StatefulWidget {
 
 class ProgressDemoPageState extends State<ProgressDemoPage> {
   Future<ProgressPageData> futureProgress;
+  Size size;
 
   List<OrderData> _data_items;
   int _delivery_rate;
@@ -45,6 +47,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text('Order Progress'),
@@ -83,9 +86,8 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   Widget _buildCharts(BuildContext context) {
     return UsingCardView(
       card: ConstrainedBox(
-        constraints: BoxConstraints.expand(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.5),
+        constraints:
+            BoxConstraints.expand(width: size.width, height: size.height * 0.5),
         child: Align(
           alignment: Alignment.bottomCenter,
           child: _buildHeader(),
@@ -93,7 +95,7 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
       ),
       view: Container(
         child: ListView.builder(
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(size.height / 40.0),
           itemCount: _data_items.length,
           itemBuilder: (BuildContext context, int index) {
             OrderData data = _data_items[index];
@@ -107,12 +109,15 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
                   (data.crafts[i].percent * 100).toString() +
                   '%';
               progress_items.add(new LinearPercentIndicator(
-                width: (MediaQuery.of(context).size.width - 200) / len,
-                lineHeight: 20.0,
+                width: (size.width * 0.8) / len,
+                lineHeight: size.height / 30.0,
                 animation: true,
                 animationDuration: 500,
                 percent: percent,
-                center: Text(center_str),
+                center: Text(center_str,
+                    style: TextStyle(
+                        fontSize: AdaptiveTextSize()
+                            .getadaptiveTextSize(context, 12.0))),
                 progressColor: data.delay
                     ? Colors.red
                     : (percent >= 1
@@ -196,11 +201,10 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
     return Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height / 30),
+          padding: EdgeInsets.symmetric(vertical: size.height / 30.0),
           child: Container(
-            height: MediaQuery.of(context).size.height / 2,
-            width: MediaQuery.of(context).size.width / 1.5,
+            height: size.height / 2.0,
+            width: size.width / 1.1,
             decoration: BoxDecoration(),
             child: Card(
               child: Column(
@@ -213,13 +217,15 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
                       'Before ' +
                           DateFormat('yyyy-MM-dd').format(_selected_date),
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: AdaptiveTextSize()
+                              .getadaptiveTextSize(context, 14.0)),
                     ),
                   ),
                   _buildSum(context),
                   Center(
                       child: Column(children: [
-                    Container(height: MediaQuery.of(context).size.height / 40),
+                    Container(height: size.height / 40.0),
                     RaisedButton(
                       color: Colors.blue,
                       textColor: Colors.white,
@@ -238,52 +244,20 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
 
   Widget _buildSum(BuildContext context) {
     return CircularPercentIndicator(
-      radius: 130.0,
+      radius: size.height / 6.0,
       animation: true,
       animationDuration: 1200,
-      lineWidth: (MediaQuery.of(context).size.width / 100),
-      percent: _delivery_rate / 100,
+      lineWidth: (size.width / 100.0),
+      percent: _delivery_rate / 100.0,
       center: new Text(
         _delivery_rate.toString() + '%',
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+        style: new TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: AdaptiveTextSize().getadaptiveTextSize(context, 20.0)),
       ),
       progressColor: _delivery_rate < 20
           ? Colors.red
           : progress_colors[4 - (_delivery_rate ~/ 20)],
-    );
-  }
-
-  Widget _buildRow(OrderData data) {
-    List<Widget> progress_items = [];
-    Widget content;
-    int len = data.crafts.length;
-    for (int i = 0; i < len; i++) {
-      double percent = data.crafts[i].percent;
-      String center_str = data.crafts[i].name +
-          ': ' +
-          (data.crafts[i].percent * 100).toString() +
-          '%';
-      progress_items.add(new LinearPercentIndicator(
-        width: (MediaQuery.of(context).size.width - 150) / len,
-        lineHeight: 20.0,
-        animation: true,
-        animationDuration: 500,
-        percent: percent,
-        center: Text(center_str),
-        progressColor: data.delay
-            ? Colors.red
-            : (percent >= 1
-                ? Colors.green
-                : progress_colors[i % progress_colors.length]),
-        linearStrokeCap: LinearStrokeCap.roundAll,
-      ));
-    }
-    content = new Row(
-      children: progress_items,
-    );
-    return new Padding(
-      padding: EdgeInsets.all(16.0),
-      child: content,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:math';
 
 import 'package:gantt_flutter/models.dart';
+import 'package:gantt_flutter/calendar_demo/responsive.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -80,7 +81,9 @@ class ProductGranttScreenState extends State<ProductGanttPage>
     }
 
     return AppBar(
-      title: Text('Resource Gantt'),
+      title: Text('Product Gantt',
+          style: TextStyle(
+              fontSize: AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
       actions: [
         RaisedButton(
           color: Colors.blue,
@@ -88,7 +91,10 @@ class ProductGranttScreenState extends State<ProductGanttPage>
           onPressed: () {
             datePicker();
           },
-          child: Text("View resource gantt in another date..."),
+          child: Text("Change date",
+              style: TextStyle(
+                  fontSize:
+                      AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
         )
       ],
     );
@@ -326,8 +332,8 @@ class ProductGantt extends StatelessWidget {
     );
   }
 
-  Widget buildChartForEachUser(
-      List<Resource> userData, double chartViewWidth, Product user) {
+  Widget buildChartForEachUser(BuildContext context, List<Resource> userData,
+      double chartViewWidth, Product user) {
     // Color color = randomColorGenerator();
     var chartBars = buildChartBars(userData, chartViewWidth, color);
     return Container(
@@ -360,6 +366,10 @@ class ProductGantt extends StatelessWidget {
                                     child: new Text(
                                       user.name,
                                       textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AdaptiveTextSize()
+                                              .getadaptiveTextSize(
+                                                  context, 16.0)),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -392,8 +402,8 @@ class ProductGantt extends StatelessWidget {
           .toList();
 
       if (projectsOfUser.length > 0) {
-        chartContent
-            .add(buildChartForEachUser(projectsOfUser, chartViewWidth, user));
+        chartContent.add(buildChartForEachUser(
+            context, projectsOfUser, chartViewWidth, user));
       }
     });
 

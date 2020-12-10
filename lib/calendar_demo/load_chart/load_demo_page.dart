@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:gantt_flutter/calendar_demo/http_data/load_data.dart';
 import 'using_card_view.dart';
 import 'package:gantt_flutter/models.dart';
+import 'package:gantt_flutter/calendar_demo/responsive.dart';
 
 var bar_colors = [
   Colors.lightBlue,
@@ -29,6 +30,7 @@ class LoadDemoPage extends StatefulWidget {
 
 class LoadDemoPageState extends State<LoadDemoPage> {
   Future<LoadPageData> futureLoad;
+  Size size;
 
   List<RowData> _data_rows;
   int _device_load;
@@ -52,6 +54,8 @@ class LoadDemoPageState extends State<LoadDemoPage> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Load Chart'),
@@ -88,7 +92,7 @@ class LoadDemoPageState extends State<LoadDemoPage> {
 
   Widget _buildRow(RowData data) {
     return new Container(
-      height: 300,
+      height: size.height / 3.0,
       child: getBar(data.data),
     );
   }
@@ -127,10 +131,10 @@ class LoadDemoPageState extends State<LoadDemoPage> {
     return Align(
         alignment: Alignment.center,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 48.0),
+          padding: EdgeInsets.symmetric(vertical: size.height / 16.0),
           child: Container(
-            height: MediaQuery.of(context).size.height / 2,
-            width: MediaQuery.of(context).size.width / 1.5,
+            height: size.height / 2.0,
+            width: size.width / 1.1,
             decoration: BoxDecoration(),
             child: Card(
               child: Column(
@@ -144,13 +148,15 @@ class LoadDemoPageState extends State<LoadDemoPage> {
                           ' to ' +
                           DateFormat('yyyy-MM-dd').format(_to_date),
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14.0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: AdaptiveTextSize()
+                              .getadaptiveTextSize(context, 12.0)),
                     ),
                   ),
                   _buildSum(context),
                   Center(
                       child: Column(children: [
-                    Container(height: 20.0),
+                    Container(height: size.height / 50.0),
                     RaisedButton(
                       color: Colors.blue,
                       textColor: Colors.white,
@@ -168,9 +174,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 
   Widget _buildSum(BuildContext context) {
-    List<Widget> listViews = <Widget>[];
-
-    //在此处添加设备占用率
     var data = [_device_load, _human_load];
     var text = ['Device Load', 'Human Load'];
     List<Widget> load_sum_items = [];
@@ -180,21 +183,22 @@ class LoadDemoPageState extends State<LoadDemoPage> {
       double percent = data[i] / 100.0;
 
       load_sum_items.add(new CircularPercentIndicator(
-        radius: MediaQuery.of(context).size.width / 12,
-        lineWidth: (MediaQuery.of(context).size.width ~/ 540) * 4.0,
+        radius: size.width / 6.0,
+        lineWidth: size.width / 120.0,
         percent: data[i] / 100.0,
         center: new Text(data[i].toString() + '%'),
         progressColor: bar_colors[data[i] ~/ 20],
         footer: new Text(
           text[i],
-          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 17.0),
+          style: new TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: AdaptiveTextSize().getadaptiveTextSize(context, 18.0)),
         ),
       ));
 
       if (i == 0) {
         load_sum_items.add(new Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width / 15),
+          padding: EdgeInsets.symmetric(horizontal: size.width / 16.0),
         ));
       }
     }
@@ -208,26 +212,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 
   Widget _buildCharts(BuildContext context) {
-    dateTimeRangePicker() async {
-      DateTimeRange picked = await showDateRangePicker(
-        context: context,
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5),
-        initialDateRange: DateTimeRange(
-          end: _to_date,
-          start: _from_date,
-        ),
-      );
-
-      setState(() {
-        _from_date = picked.start;
-        _to_date = picked.end;
-
-        _data_rows.clear();
-        futureLoad = fetchLoadData(client, _from_date, _to_date);
-      });
-    }
-
     return UsingCardView(
       card: ConstrainedBox(
         constraints: BoxConstraints.expand(
@@ -259,7 +243,9 @@ class LoadDemoPageState extends State<LoadDemoPage> {
                     Text(
                       _data_rows[index].date,
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: AdaptiveTextSize()
+                              .getadaptiveTextSize(context, 20.0)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

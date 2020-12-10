@@ -6,6 +6,7 @@ import 'package:gantt_flutter/calendar_demo/info_table/resource_table_page.dart'
 import 'package:gantt_flutter/calendar_demo/info_table/order_table_page.dart';
 import 'package:gantt_flutter/calendar_demo/home_page/list_animation_page.dart';
 import 'package:gantt_flutter/calendar_demo/home_page/PageItem.dart';
+import 'responsive.dart';
 
 class CalendarDemoPage extends StatelessWidget {
   List<Item> _pages;
@@ -59,7 +60,11 @@ class CalendarDemoPage extends StatelessWidget {
 
     for (int i = 0; i < _pages.length; i++) {
       navigations.add(ListTile(
-          title: Text(_pages[i].name),
+          title: Text(_pages[i].name,
+              maxLines: 2,
+              style: TextStyle(
+                  fontSize:
+                      AdaptiveTextSize().getadaptiveTextSize(context, 16.0))),
           onTap: () => Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => _pages[i].page))));
     }

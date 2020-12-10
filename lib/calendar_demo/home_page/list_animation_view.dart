@@ -18,7 +18,6 @@ class _ListAnimationViewState extends State<ListAnimationView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _pages = widget.pages;
   }
@@ -26,7 +25,12 @@ class _ListAnimationViewState extends State<ListAnimationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
+        body: Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              colors: [Colors.redAccent, Colors.deepPurple])),
+      child: ListView.builder(
         itemCount: _pages.length,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -39,6 +43,6 @@ class _ListAnimationViewState extends State<ListAnimationView> {
           ));
         },
       ),
-    );
+    ));
   }
 }

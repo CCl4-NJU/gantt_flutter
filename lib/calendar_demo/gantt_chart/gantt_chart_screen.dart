@@ -3,9 +3,9 @@ import 'product_gantt_page.dart';
 import 'package:gantt_flutter/calendar_demo/http_data/gantt_data.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-import 'dart:math';
 
 import 'package:gantt_flutter/models.dart';
+import 'package:gantt_flutter/calendar_demo/responsive.dart';
 
 List<Color> gantt_colors = [
   Colors.amber,
@@ -91,7 +91,9 @@ class GranttChartScreenState extends State<GranttChartScreen>
     }
 
     return AppBar(
-      title: Text('Resource Gantt'),
+      title: Text('Resource Gantt',
+          style: TextStyle(
+              fontSize: AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
       actions: [
         RaisedButton(
           color: Colors.blue,
@@ -99,7 +101,10 @@ class GranttChartScreenState extends State<GranttChartScreen>
           onPressed: () {
             datePicker();
           },
-          child: Text("View resource gantt in another date..."),
+          child: Text("Change date",
+              style: TextStyle(
+                  fontSize:
+                      AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
         )
       ],
     );
@@ -385,6 +390,10 @@ class GanttChart extends StatelessWidget {
                                         child: new Text(
                                           user.name,
                                           textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: AdaptiveTextSize()
+                                                  .getadaptiveTextSize(
+                                                      context, 16.0)),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),

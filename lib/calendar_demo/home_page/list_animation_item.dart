@@ -17,9 +17,8 @@ class ListAnimationItem extends StatefulWidget {
 
 class _ListAnimationItemState extends State<ListAnimationItem>
     with TickerProviderStateMixin {
-  static const double HEIGHT = 180;
+  double HEIGHT;
   static const double CARD = 0.7;
-  static const double ICON = 56;
 
   AnimationController _ctrImage;
   Animation _aniImage;
@@ -66,6 +65,7 @@ class _ListAnimationItemState extends State<ListAnimationItem>
 
   @override
   Widget build(BuildContext context) {
+    HEIGHT = MediaQuery.of(context).size.height / 3.6;
     return GestureDetector(
       child: Container(
           height: HEIGHT,
@@ -80,7 +80,6 @@ class _ListAnimationItemState extends State<ListAnimationItem>
                     _buildImage(),
                     _buildTitle(),
                     _buildDescription(),
-                    _buildHeart(),
                   ],
                 );
               })),
@@ -118,8 +117,7 @@ class _ListAnimationItemState extends State<ListAnimationItem>
         double _widthText = MediaQuery.of(context).size.width -
             _leftText -
             _padding -
-            _paddingText -
-            ICON;
+            _paddingText;
         double _heightText = _heightTitle - _paddingText;
 
         return Positioned(
@@ -133,7 +131,7 @@ class _ListAnimationItemState extends State<ListAnimationItem>
               child: Text(
                 widget.page.name,
                 style: TextStyle(
-                    color: Colors.black54,
+                    color: Colors.black87,
                     fontSize: 20.0,
                     fontWeight: FontWeight.w600),
                 textAlign: TextAlign.justify,
@@ -178,39 +176,6 @@ class _ListAnimationItemState extends State<ListAnimationItem>
               ),
             ),
           ),
-        );
-      },
-    );
-  }
-
-  _buildHeart() {
-    double _value = 1.0 - _aniCheck.value;
-    Color _color = _ctrCheck.isAnimating
-        ? (widget.page.isCheck ? Colors.black38 : Colors.pink)
-        : (widget.page.isCheck ? Colors.pink : Colors.black38);
-    double _expandSize = (widget.page.isCheck ? 0.0 : 12.0) *
-        (_ctrCheck.isAnimating ? _value : 0.0);
-
-    return AnimatedBuilder(
-      animation: _aniText,
-      builder: (context, child) {
-        double _value = _aniText.value;
-        double _left = MediaQuery.of(context).size.width -
-            _padding / 2 -
-            _paddingText -
-            ICON -
-            _expandSize / 2;
-        double _top = _topText - _expandSize / 2;
-        return Positioned(
-          top: _top,
-          left: _left,
-          child: Opacity(
-              opacity: _value,
-              child: Icon(
-                Icons.forward,
-                color: _color,
-                size: ICON / 2 + _expandSize,
-              )),
         );
       },
     );
@@ -261,9 +226,7 @@ class _ListAnimationItemState extends State<ListAnimationItem>
               height: _heightImage,
               width: _heightImage,
               decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 16.0)
-                  ],
+                  boxShadow: [BoxShadow(color: Colors.black, blurRadius: 16.0)],
                   image: DecorationImage(
                       image: NetworkImage(widget.page.image),
                       fit: BoxFit.cover),
