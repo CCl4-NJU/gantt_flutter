@@ -16,14 +16,15 @@ class CalendarDemoPage extends StatelessWidget {
       Item(
         name: "Resource Gantt",
         image:
-            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=16049522,476001924&fm=26&gp=0.jpg",
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607595661512&di=758deeb88abcd8325808b3ad274ef6e7&imgtype=0&src=http%3A%2F%2Fpic.51yuansu.com%2Fpic2%2Fcover%2F00%2F44%2F63%2F5814b5c376355_610.jpg",
         description:
             "Shows the gantt chart for all resources in indicated day, grouped by products and each products showed in different colors.",
         page: GranttChartScreen(),
       ),
       Item(
         name: "Resource Load",
-        image: "https://miro.medium.com/max/3728/1*Kz0CQHayNH8kKQxIu3J9BA.png",
+        image:
+            "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1959883446,3062622374&fm=26&gp=0.jpg",
         description:
             "Show the load information for each resources in indicated duration, grouped by the date.",
         page: LoadDemoPage(),
@@ -31,7 +32,7 @@ class CalendarDemoPage extends StatelessWidget {
       Item(
         name: "Order Progress",
         image:
-            "https://toanhoang.com/wp-content/uploads/2017/06/Progress-Bar@2x.png",
+            "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2803780353,2652913098&fm=26&gp=0.jpg",
         description:
             "Show the on-time delivery rate and orders' progress indicator in the chosen day, each orders showed indicate that it has crafts that day.",
         page: ProgressDemoPage(),
@@ -44,13 +45,13 @@ class CalendarDemoPage extends StatelessWidget {
             "Show all the resources' information, both human kind and device kind.",
         page: ResourceTableDemoPage(),
       ),
-      Item(
-        name: "Sub-order Info",
-        image:
-            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607595168976&di=c2f1855ff5945e0e854da3c58d93ef73&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F00%2F92%2F55%2F6356f227e8860b4.jpg%2521rw400",
-        description: "Show information for sub-orders.",
-        page: OrderTableDemoPage(),
-      ),
+      // Item(
+      //   name: "Sub-order Info",
+      //   image:
+      //       "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607595168976&di=c2f1855ff5945e0e854da3c58d93ef73&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F00%2F92%2F55%2F6356f227e8860b4.jpg%2521rw400",
+      //   description: "Show information for sub-orders.",
+      //   page: OrderTableDemoPage(),
+      // ),
     ];
 
     List<Widget> navigations = new List<Widget>();
