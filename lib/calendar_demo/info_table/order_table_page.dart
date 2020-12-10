@@ -39,7 +39,7 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Order Info'),
+          title: Text('Sub-order Info'),
           backgroundColor: Theme.of(context).primaryColor),
       body: Container(
         alignment: Alignment.center,

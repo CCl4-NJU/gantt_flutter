@@ -48,7 +48,7 @@ class _UsingCardViewState extends State<UsingCardView>
       decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topCenter,
-              colors: [Colors.greenAccent, Colors.blueGrey])),
+              colors: [Colors.redAccent, Colors.deepPurple])),
       child: Stack(
         children: <Widget>[
           _buildCard(),
