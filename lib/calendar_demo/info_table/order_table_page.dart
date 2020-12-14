@@ -39,7 +39,7 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Sub-order Info'),
+          title: Text('Order Info'),
           backgroundColor: Theme.of(context).primaryColor),
       body: Container(
         alignment: Alignment.center,
@@ -99,7 +99,7 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
           label: Text('Order Id',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       DataColumn(
-          label: Text('Sub-order Id',
+          label: Text('Sub-Order Id',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       DataColumn(
           label: Text('Start Time',
@@ -126,7 +126,7 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
           label: Text('Order Id',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       DataColumn(
-          label: Text('Sub-order Id',
+          label: Text('Sub-Order Id',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
       DataColumn(
           label: Text('Resource Used(varieties)',

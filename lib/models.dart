@@ -71,3 +71,12 @@ class OrderResourceData {
   String time_count;
   OrderResourceData(this.id, this.sub_id, this.resource_count, this.time_count);
 }
+
+/** 子订单资源数据模型 */
+class SuborderResourceData {
+  String sub_id;
+  String resource_name;
+  String start;
+  String end;
+  SuborderResourceData(this.sub_id, this.resource_name, this.start, this.end);
+}

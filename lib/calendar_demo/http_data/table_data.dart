@@ -114,3 +114,80 @@ Future<OrderTablePageData> fetchOrderTableData(http.Client client) async {
     throw Exception('Failed to load OrderInfoPageData');
   }
 }
+
+/** ------------------------------------------------------ */
+
+class SubOrderTablePageData {
+  final List<SubOrderScheduleTableData> sub_order_schedule;
+  final List<SubOrderResourceTableData> sub_order_resource;
+
+  SubOrderTablePageData({this.sub_order_schedule, this.sub_order_resource});
+
+  factory SubOrderTablePageData.fromJson(Map<String, dynamic> json_data) {
+    Iterable schedule = json_data['schedule']; //子订单-资源关系
+    List<SubOrderScheduleTableData> os = schedule
+        .map((model) => SubOrderScheduleTableData.fromJson(model))
+        .toList();
+    Iterable resource = json_data['resource']; //资源占用情况
+    List<SubOrderResourceTableData> or = resource
+        .map((model) => SubOrderResourceTableData.fromJson(model))
+        .toList();
+
+    return SubOrderTablePageData(
+        sub_order_schedule: os, sub_order_resource: or);
+  }
+}
+
+class SubOrderScheduleTableData {
+  final String sub_id;
+  final String resource_name;
+  final String start;
+  final String end;
+
+  SubOrderScheduleTableData(
+      {this.sub_id, this.resource_name, this.start, this.end});
+
+  factory SubOrderScheduleTableData.fromJson(Map<String, dynamic> json_data) {
+    return SubOrderScheduleTableData(
+        sub_id: json_data['sub_id'],
+        resource_name: json_data['resource_name'],
+        start: json_data['start'],
+        end: json_data['end']);
+  }
+}
+
+class SubOrderResourceTableData {
+  final String resource_name;
+  final String start;
+  final String end;
+  final String sub_used; //被该子订单占用
+  final String used; //被该订单占用
+
+  SubOrderResourceTableData(
+      {this.resource_name, this.start, this.end, this.sub_used, this.used});
+
+  factory SubOrderResourceTableData.fromJson(Map<String, dynamic> json_data) {
+    return SubOrderResourceTableData(
+        resource_name: json_data['resource_name'],
+        start: json_data['start'],
+        end: json_data['end'],
+        sub_used: json_data['sub_used'],
+        used: json_data['used']);
+  }
+}
+
+Future<SubOrderTablePageData> fetchSubOrderTableData(
+    http.Client client, DateTime date) async {
+  String date_url = date.year.toString() +
+      '-' +
+      date.month.toString() +
+      '-' +
+      date.day.toString();
+  final response = await client.get('localhost:8080/suborder/info/' + date_url);
+  // print(date);
+  if (response.statusCode == 200) {
+    return SubOrderTablePageData.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load SubOrderInfoPageData');
+  }
+}

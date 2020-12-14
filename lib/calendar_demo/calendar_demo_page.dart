@@ -4,6 +4,7 @@ import 'package:gantt_flutter/calendar_demo/load_chart/load_demo_page.dart';
 import 'package:gantt_flutter/calendar_demo/progress_chart/progress_demo_page.dart';
 import 'package:gantt_flutter/calendar_demo/info_table/resource_table_page.dart';
 import 'package:gantt_flutter/calendar_demo/info_table/order_table_page.dart';
+import 'package:gantt_flutter/calendar_demo/info_table/suborder_table_page.dart';
 import 'package:gantt_flutter/calendar_demo/home_page/list_animation_page.dart';
 import 'package:gantt_flutter/calendar_demo/home_page/PageItem.dart';
 import 'responsive.dart';
@@ -46,13 +47,22 @@ class CalendarDemoPage extends StatelessWidget {
             "Show all the resources' information, both human kind and device kind.",
         page: ResourceTableDemoPage(),
       ),
-      // Item(
-      //   name: "Sub-order Info",
-      //   image:
-      //       "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1607595168976&di=c2f1855ff5945e0e854da3c58d93ef73&imgtype=0&src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F00%2F92%2F55%2F6356f227e8860b4.jpg%2521rw400",
-      //   description: "Show information for sub-orders.",
-      //   page: OrderTableDemoPage(),
-      // ),
+      Item(
+        name: "Order Info",
+        image:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1510094872,3558345393&fm=26&gp=0.jpg",
+        description:
+            "Show information for orders, including how each is divided to sub-orders and the summary of resources used.",
+        page: OrderTableDemoPage(),
+      ),
+      Item(
+        name: "Sub-Order Info",
+        image:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1510094872,3558345393&fm=26&gp=0.jpg",
+        description:
+            "Show information for sub-orders, including sub-order-resource schedule and the summary of resources used.",
+        page: SubOrderTableDemoPage(),
+      ),
     ];
 
     List<Widget> navigations = new List<Widget>();
