@@ -184,7 +184,7 @@ Future<SubOrderTablePageData> fetchSubOrderTableData(
       '-' +
       date.day.toString();
   final response = await client.get('localhost:8080/suborder/info/' + date_url);
-  // print(date);
+  // print(date_url);
   if (response.statusCode == 200) {
     return SubOrderTablePageData.fromJson(jsonDecode(response.body));
   } else {

@@ -74,34 +74,38 @@ class _SubOrderTableDemoPageState extends State<SubOrderTableDemoPage> {
       ),
       body: Container(
         alignment: Alignment.center,
-        child: FutureBuilder<SubOrderTablePageData>(
-          future: futureSubOrderTable,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              _sub_order_schedule.clear();
-              _sub_order_resource.clear();
-
-              _sub_order_schedule.addAll(snapshot.data.sub_order_schedule);
-
-              _sub_order_resource.addAll(snapshot.data.sub_order_resource);
-
-              return QuickSwitchView(
-                  primary: QuickSwitchModel(
-                      "Schedule", _buildSchedule(_sub_order_schedule)),
-                  secondary: QuickSwitchModel(
-                      "Resource", _buildResource(_sub_order_resource)));
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return CircularProgressIndicator();
-          },
-        ),
+        child: _buildFuture(),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: [Colors.redAccent, Colors.deepPurple],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight)),
       ),
+    );
+  }
+
+  Widget _buildFuture() {
+    return FutureBuilder<SubOrderTablePageData>(
+      future: futureSubOrderTable,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          _sub_order_schedule.clear();
+          _sub_order_resource.clear();
+
+          _sub_order_schedule.addAll(snapshot.data.sub_order_schedule);
+
+          _sub_order_resource.addAll(snapshot.data.sub_order_resource);
+
+          return QuickSwitchView(
+              primary: QuickSwitchModel(
+                  "Schedule", _buildSchedule(_sub_order_schedule)),
+              secondary: QuickSwitchModel(
+                  "Resource", _buildResource(_sub_order_resource)));
+        } else if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 
@@ -229,4 +233,8 @@ void mockSubOrderTableConfig() {
       '{"schedule":[{"sub_id":"1","resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00"},{"sub_id":"2","resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00"},{"sub_id":"3","resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00"},{"sub_id":"4","resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00"},{"sub_id":"5","resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"}],"resource":[{"resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00","sub_used":"1","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00","sub_used":"2","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00","sub_used":"3","used":"1"},{"resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00","sub_used":"4","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00","sub_used":"5","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"}]}';
   when(client.get('localhost:8080/suborder/info/2018-1-1'))
       .thenAnswer((_) async => http.Response(response_sub_order_info, 200));
+  String response_sub_order_info2 =
+      '{"schedule":[{"sub_id":"1","resource_name":"Zhang San","start":"2018-1-2 7:00","end":"2018-1-2 9:00"},{"sub_id":"2","resource_name":"Zhang San","start":"2018-1-2 9:00","end":"2018-1-2 11:00"},{"sub_id":"3","resource_name":"Zhang San","start":"2018-1-2 11:00","end":"2018-1-2 13:00"},{"sub_id":"4","resource_name":"Li Si","start":"2018-1-2 17:00","end":"2018-1-2 19:00"},{"sub_id":"5","resource_name":"Li Si","start":"2018-1-2 19:00","end":"2018-1-2 21:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00"}],"resource":[{"resource_name":"Zhang San","start":"2018-1-2 7:00","end":"2018-1-2 9:00","sub_used":"1","used":"1"},{"resource_name":"Zhang San","start":"2018-1-2 9:00","end":"2018-1-2 11:00","sub_used":"2","used":"1"},{"resource_name":"Zhang San","start":"2018-1-2 11:00","end":"2018-1-2 13:00","sub_used":"3","used":"1"},{"resource_name":"Li Si","start":"2018-1-2 17:00","end":"2018-1-2 19:00","sub_used":"4","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 19:00","end":"2018-1-2 21:00","sub_used":"5","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-2 21:00","end":"2018-1-2 22:00","sub_used":"6","used":"2"}]}';
+  when(client.get('localhost:8080/suborder/info/2018-1-2'))
+      .thenAnswer((_) async => http.Response(response_sub_order_info2, 200));
 }
