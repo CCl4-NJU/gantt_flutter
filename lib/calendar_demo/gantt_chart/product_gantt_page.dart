@@ -91,10 +91,8 @@ class ProductGranttScreenState extends State<ProductGanttPage>
           onPressed: () {
             datePicker();
           },
-          child: Text("Change date",
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
+          child: Icon(Icons.calendar_today_outlined,
+              size: AdaptiveTextSize().getadaptiveTextSize(context, 20.0)),
         )
       ],
     );

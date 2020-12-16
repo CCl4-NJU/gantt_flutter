@@ -96,16 +96,13 @@ class GranttChartScreenState extends State<GranttChartScreen>
               fontSize: AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
       actions: [
         RaisedButton(
-          color: Colors.blue,
-          textColor: Colors.white,
-          onPressed: () {
-            datePicker();
-          },
-          child: Text("Change date",
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
-        )
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: () {
+              datePicker();
+            },
+            child: Icon(Icons.calendar_today_outlined,
+                size: AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
       ],
     );
   }

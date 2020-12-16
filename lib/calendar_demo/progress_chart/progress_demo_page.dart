@@ -48,9 +48,38 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
+
+    datePicker() async {
+      DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: _selected_date,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+      );
+      setState(() {
+        _selected_date = picked;
+
+        futureProgress = fetchProgressData(client, _selected_date);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Progress'),
+        title: Text('Order Progress',
+            style: TextStyle(
+                fontSize:
+                    AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
+        actions: [
+          RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: () {
+              datePicker();
+            },
+            child: Icon(Icons.calendar_today_outlined,
+                size: AdaptiveTextSize().getadaptiveTextSize(context, 20.0)),
+          )
+        ],
       ),
       body: Center(
         child: FutureBuilder<ProgressPageData>(
@@ -184,27 +213,13 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
   }
 
   Widget _buildCard() {
-    datePicker() async {
-      DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: _selected_date,
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5),
-      );
-      setState(() {
-        _selected_date = picked;
-
-        futureProgress = fetchProgressData(client, _selected_date);
-      });
-    }
-
     return Align(
         alignment: Alignment.center,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: size.height / 30.0),
           child: Container(
             height: size.height / 2.0,
-            width: size.width / 1.1,
+            width: size.height / 2.0,
             decoration: BoxDecoration(),
             child: Card(
               child: Column(
@@ -223,18 +238,6 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
                     ),
                   ),
                   _buildSum(context),
-                  Center(
-                      child: Column(children: [
-                    Container(height: size.height / 40.0),
-                    RaisedButton(
-                      color: Colors.blue,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        datePicker();
-                      },
-                      child: Text("View order progress in another date..."),
-                    ),
-                  ])),
                 ],
               ),
             ),
@@ -244,10 +247,10 @@ class ProgressDemoPageState extends State<ProgressDemoPage> {
 
   Widget _buildSum(BuildContext context) {
     return CircularPercentIndicator(
-      radius: size.height / 6.0,
+      radius: size.height / 4.0,
       animation: true,
       animationDuration: 1200,
-      lineWidth: (size.width / 100.0),
+      lineWidth: (size.width / 66.7),
       percent: _delivery_rate / 100.0,
       center: new Text(
         _delivery_rate.toString() + '%',

@@ -56,9 +56,43 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
 
+    dateTimeRangePicker() async {
+      DateTimeRange picked = await showDateRangePicker(
+        context: context,
+        firstDate: DateTime(DateTime.now().year - 5),
+        lastDate: DateTime(DateTime.now().year + 5),
+        initialDateRange: DateTimeRange(
+          end: _to_date,
+          start: _from_date,
+        ),
+      );
+
+      setState(() {
+        _from_date = picked.start;
+        _to_date = picked.end;
+
+        _data_rows.clear();
+        futureLoad = fetchLoadData(client, _from_date, _to_date);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Load Chart'),
+        title: Text('Resource Load',
+            style: TextStyle(
+                fontSize:
+                    AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
+        actions: [
+          RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: () {
+              dateTimeRangePicker();
+            },
+            child: Icon(Icons.calendar_today_outlined,
+                size: AdaptiveTextSize().getadaptiveTextSize(context, 20.0)),
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -108,26 +142,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
   }
 
   _buildCard() {
-    dateTimeRangePicker() async {
-      DateTimeRange picked = await showDateRangePicker(
-        context: context,
-        firstDate: DateTime(DateTime.now().year - 5),
-        lastDate: DateTime(DateTime.now().year + 5),
-        initialDateRange: DateTimeRange(
-          end: _to_date,
-          start: _from_date,
-        ),
-      );
-
-      setState(() {
-        _from_date = picked.start;
-        _to_date = picked.end;
-
-        _data_rows.clear();
-        futureLoad = fetchLoadData(client, _from_date, _to_date);
-      });
-    }
-
     return Align(
         alignment: Alignment.center,
         child: Padding(
@@ -154,18 +168,6 @@ class LoadDemoPageState extends State<LoadDemoPage> {
                     ),
                   ),
                   _buildSum(context),
-                  Center(
-                      child: Column(children: [
-                    Container(height: size.height / 50.0),
-                    RaisedButton(
-                      color: Colors.blue,
-                      textColor: Colors.white,
-                      onPressed: () {
-                        dateTimeRangePicker();
-                      },
-                      child: Text("View resource load in another duration..."),
-                    ),
-                  ])),
                 ],
               ),
             ),

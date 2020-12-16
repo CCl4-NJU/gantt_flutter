@@ -56,21 +56,22 @@ class _SubOrderTableDemoPageState extends State<SubOrderTableDemoPage> {
 
     return Scaffold(
       appBar: AppBar(
-          title: Text('Sub-Order Info'),
-          actions: [
-            RaisedButton(
-              color: Colors.blue,
-              textColor: Colors.white,
-              onPressed: () {
-                datePicker();
-              },
-              child: Text("Change date",
-                  style: TextStyle(
-                      fontSize: AdaptiveTextSize()
-                          .getadaptiveTextSize(context, 20.0))),
-            )
-          ],
-          backgroundColor: Theme.of(context).primaryColor),
+        title: Text('Sub-Order Info',
+            style: TextStyle(
+                fontSize:
+                    AdaptiveTextSize().getadaptiveTextSize(context, 20.0))),
+        actions: [
+          RaisedButton(
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: () {
+              datePicker();
+            },
+            child: Icon(Icons.calendar_today_outlined,
+                size: AdaptiveTextSize().getadaptiveTextSize(context, 20.0)),
+          )
+        ],
+      ),
       body: Container(
         alignment: Alignment.center,
         child: FutureBuilder<SubOrderTablePageData>(
