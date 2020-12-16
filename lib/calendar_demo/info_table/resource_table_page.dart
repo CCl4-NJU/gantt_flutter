@@ -100,17 +100,19 @@ class _ResourceTableDemoPageState extends State<ResourceTableDemoPage> {
         DataCell(Text(data.shift))
       ]));
     }
-    return DataTable(columns: [
-      DataColumn(
-          label: Text('Name',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Number',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Shift',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
-    ], rows: data_row);
+    return ListView(children: [
+      DataTable(columns: [
+        DataColumn(
+            label: Text('Name',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Number',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Shift',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+      ], rows: data_row)
+    ]);
   }
 }
 

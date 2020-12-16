@@ -94,20 +94,22 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
         DataCell(Text(data.end))
       ]));
     }
-    return DataTable(columns: [
-      DataColumn(
-          label: Text('Order Id',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Sub-Order Id',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Start Time',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Finish Time',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-    ], rows: data_row);
+    return ListView(children: [
+      DataTable(columns: [
+        DataColumn(
+            label: Text('Order Id',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Sub-Order Id',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Start Time',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Finish Time',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+      ], rows: data_row)
+    ]);
   }
 
   Widget _buildResource(List<OrderResourceData> resource_list) {
@@ -121,20 +123,24 @@ class _OrderTableDemoPageState extends State<OrderTableDemoPage> {
         DataCell(Text(data.time_count))
       ]));
     }
-    return DataTable(columns: [
-      DataColumn(
-          label: Text('Order Id',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Sub-Order Id',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Resource Used(varieties)',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Time Used(hours)',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
-    ], rows: data_row);
+    return ListView(
+      children: [
+        DataTable(columns: [
+          DataColumn(
+              label: Text('Order Id',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Sub-Order Id',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Resource Used(varieties)',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Time Used(hours)',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold))),
+        ], rows: data_row)
+      ],
+    );
   }
 }
 

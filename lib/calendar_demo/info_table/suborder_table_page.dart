@@ -128,32 +128,36 @@ class _SubOrderTableDemoPageState extends State<SubOrderTableDemoPage> {
                     AdaptiveTextSize().getadaptiveTextSize(context, 10.0))))
       ]));
     }
-    return DataTable(columns: [
-      DataColumn(
-          label: Text('Sub-Order Id',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Resource Name',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Start Time',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Finish Time',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-    ], rows: data_row);
+    return ListView(
+      children: [
+        DataTable(columns: [
+          DataColumn(
+              label: Text('Sub-Order Id',
+                  style: TextStyle(
+                      fontSize:
+                          AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                      fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Resource Name',
+                  style: TextStyle(
+                      fontSize:
+                          AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                      fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Start Time',
+                  style: TextStyle(
+                      fontSize:
+                          AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                      fontWeight: FontWeight.bold))),
+          DataColumn(
+              label: Text('Finish Time',
+                  style: TextStyle(
+                      fontSize:
+                          AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                      fontWeight: FontWeight.bold))),
+        ], rows: data_row)
+      ],
+    );
   }
 
   Widget _buildResource(List<SubOrderResourceTableData> resource_list) {
@@ -183,44 +187,46 @@ class _SubOrderTableDemoPageState extends State<SubOrderTableDemoPage> {
                     AdaptiveTextSize().getadaptiveTextSize(context, 10.0))))
       ]));
     }
-    return DataTable(columns: [
-      DataColumn(
-          label: Text('Resource Name',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Start Time',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Finish Time',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Used by Sub-Order',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-      DataColumn(
-          label: Text('Used by Order',
-              style: TextStyle(
-                  fontSize:
-                      AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
-                  fontWeight: FontWeight.bold))),
-    ], rows: data_row);
+    return ListView(children: [
+      DataTable(columns: [
+        DataColumn(
+            label: Text('Resource Name',
+                style: TextStyle(
+                    fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                    fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Start Time',
+                style: TextStyle(
+                    fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                    fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Finish Time',
+                style: TextStyle(
+                    fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                    fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Used by Sub-Order',
+                style: TextStyle(
+                    fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                    fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Used by Order',
+                style: TextStyle(
+                    fontSize:
+                        AdaptiveTextSize().getadaptiveTextSize(context, 12.0),
+                    fontWeight: FontWeight.bold))),
+      ], rows: data_row)
+    ]);
   }
 }
 
 void mockSubOrderTableConfig() {
   String response_sub_order_info =
-      '{"schedule":[{"sub_id":"1","resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00"},{"sub_id":"2","resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00"},{"sub_id":"3","resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00"},{"sub_id":"4","resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00"},{"sub_id":"5","resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"}],"resource":[{"resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00","sub_used":"1","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00","sub_used":"2","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00","sub_used":"3","used":"1"},{"resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00","sub_used":"4","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00","sub_used":"5","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"}]}';
+      '{"schedule":[{"sub_id":"1","resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00"},{"sub_id":"2","resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00"},{"sub_id":"3","resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00"},{"sub_id":"4","resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00"},{"sub_id":"5","resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"},{"sub_id":"6","resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00"}],"resource":[{"resource_name":"Zhang San","start":"2018-1-1 7:00","end":"2018-1-1 9:00","sub_used":"1","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 9:00","end":"2018-1-1 11:00","sub_used":"2","used":"1"},{"resource_name":"Zhang San","start":"2018-1-1 11:00","end":"2018-1-1 13:00","sub_used":"3","used":"1"},{"resource_name":"Li Si","start":"2018-1-1 17:00","end":"2018-1-1 19:00","sub_used":"4","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 19:00","end":"2018-1-1 21:00","sub_used":"5","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"},{"resource_name":"Li Si","start":"2018-1-1 21:00","end":"2018-1-1 22:00","sub_used":"6","used":"2"}]}';
   when(client.get('localhost:8080/suborder/info/2018-1-1'))
       .thenAnswer((_) async => http.Response(response_sub_order_info, 200));
 }
